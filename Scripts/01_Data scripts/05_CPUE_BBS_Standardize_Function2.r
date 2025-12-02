@@ -1,6 +1,6 @@
 Standardize_CPUE2 <- function(Sp, Interaction=T,minYr=2016,maxYr=2021) {
   
-require(data.table); require(tidyverse); require(mgcv): require(DHARMa); require(mgcViz); require(RColorBrewer); require(openxlsx); require(boot); require(gridExtra); require(grid); require(viridis)
+require(data.table); require(tidyverse); require(mgcv); require(DHARMa); require(mgcViz); require(RColorBrewer); require(openxlsx); require(boot); require(gridExtra); require(grid); require(viridis)
 
 Model.Years <- paste0(minYr,"_",maxYr)  
     
@@ -192,7 +192,7 @@ png(file.path(root_dir,"Outputs","Summary","CPUE figures",paste0(Sp,"_DiagsProb1
 plotQQunif(simulationOutput, testDispersion = FALSE,testUniformity = FALSE,testOutliers = FALSE)
 dev.off()
 
-if(nrow(anova(LastModel)$s.table>0)){ # Check if there are nonlinear terms to plot
+if(nrow(anova(LastModel)$s.table)>0){ # Check if there are nonlinear terms to plot
   par(mfrow=c(1,4))
   plot(LastModel,trans=plogis,shade=T,residuals=T,shift = coef(LastModel)[1], seWithMean = TRUE)
   M2 <- recordPlot()
