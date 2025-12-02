@@ -117,7 +117,7 @@ for(i in 1:nrow(Species.List)){
     OUT <-rbind( OUT,cbind("UVS_Main", myFit_UVSMain@Years,myFit_UVSMain@FM*aLH$M,myFit_UVSMain@SPR,myFit_UVSMain@SL50) )
     
         
-                   cbind("BS_Main",  myFit_BSMain@Years,myFit_BSMain@FM*aLH$M,myFit_BSMain@SPR,myFit_BSMain@SL50),
+                   cbind("BS_Main",  myFit_BSMain@Years,myFit_BSMain@FM*aLH$M,myFit_BSMain@SPR,myFit_BSMain@SL50)
                    cbind("UVS_Main", myFit_UVSMain@Years,myFit_UVSMain@FM*aLH$M,myFit_UVSMain@SPR,myFit_UVSMain@SL50)
       )
     } else if(length(BBS_Main>0)) {

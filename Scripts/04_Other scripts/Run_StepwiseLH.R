@@ -1,5 +1,5 @@
 #library(remotes)
-#remotes::install_github("PIFSCstockassessments/StepwiseLH")
+#remotes::install_github("noaa-pifsc/StepwiseLH")
 
 require(StepwiseLH); require(tidyverse) 
 
