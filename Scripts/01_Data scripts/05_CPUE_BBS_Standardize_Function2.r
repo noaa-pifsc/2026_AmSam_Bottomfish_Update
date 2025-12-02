@@ -117,11 +117,11 @@ P.SelResults$CPUE_TYPE <- "Positive-only CPUE"
 P.SelResults           <- select(P.SelResults,CPUE_TYPE,DESCRIPTION,FORMULA,AIC,DELT_AIC)
 
 # Generate model diagnostic figures
-par(mfrow=c(1,4))
+png(file.path(root_dir,"Outputs","Summary","CPUE figures",paste0(Sp,"_DiagsPos1.png")),width=12,height=3,unit="in",res=300)
+par(mfrow=c(2,2))
 gam.check(LastModel)
-M1 <- recordPlot()
-png(file.path(root_dir,"Outputs","Summary","CPUE figures",paste0(Sp,"_DiagsPos1.png")),width=8,height=2,unit="in",res=300)
-replayPlot(M1)
+# M1 <- recordPlot()
+# replayPlot(M1)
 dev.off()
 
 if(!is.null(anova(LastModel)$s.table)){ # Check if there are nonlinear terms to plot
