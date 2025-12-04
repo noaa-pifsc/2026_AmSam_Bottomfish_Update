@@ -117,19 +117,19 @@ P.SelResults$CPUE_TYPE <- "Positive-only CPUE"
 P.SelResults           <- select(P.SelResults,CPUE_TYPE,DESCRIPTION,FORMULA,AIC,DELT_AIC)
 
 # Generate model diagnostic figures
-png(file.path(root_dir,"Outputs","Summary","CPUE figures",paste0(Sp,"_DiagsPos1.png")),width=12,height=3,unit="in",res=300)
-par(mfrow=c(2,2))
+png(file.path(root_dir,"Outputs","Summary","CPUE figures",paste0(Sp,"_DiagsPos1.png")),width=12,height=10,unit="in",res=300)
+#par(mfrow=c(2,2))
 gam.check(LastModel)
 # M1 <- recordPlot()
 # replayPlot(M1)
 dev.off()
 
 if(!is.null(anova(LastModel)$s.table)){ # Check if there are nonlinear terms to plot
- par(mfrow=c(1,4))
+ #par(mfrow=c(1,4))
+ #M2 <- recordPlot()
+ png(file.path(root_dir,"Outputs","Summary","CPUE figures",paste0(Sp,"_DiagsPos2.png")),width=12,height=10,unit="in",res=300)
  plot(LastModel,residuals=T,shade=T,shift = coef(LastModel)[1], seWithMean = TRUE)
- M2 <- recordPlot()
- png(file.path(root_dir,"Outputs","Summary","CPUE figures",paste0(Sp,"_DiagsPos2.png")),width=8,height=2,unit="in",res=300)
- replayPlot(M2)
+ #replayPlot(M2)
  dev.off()
 }
 
@@ -181,7 +181,7 @@ B.SelResults$CPUE_TYPE  <- "Probability CPUE"
 B.SelResults            <- select(B.SelResults,CPUE_TYPE,DESCRIPTION,FORMULA,AIC,DELT_AIC)
 
 # Check model results
-par(mfrow=c(1,4))
+#par(mfrow=c(1,4))
 gam.check(LastModel)
 dev.off()
 
