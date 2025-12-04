@@ -12,7 +12,7 @@ pacman::p_load(boot,data.table,DHARMa,ggfortify,ggpubr,grid,gridExtra,directlabe
 
 ########## DOWNLOAD DATA FROM GOOGLE DRIVE ###############
 # Check latest data from Google Drive but only download if its more recent than on local repo
-a                  <- drive_reveal(drive_ls(path="https://drive.google.com/drive/u/1/folders/1pnH38cupmDU4O_KkKDhYWee_p4sTSD6u", pattern="Data"), what = "modified_time")
+a                  <- drive_reveal(drive_ls(path="https://drive.google.com/drive/u/0/folders/1heY5Nmh9LiDGk_i1jsGcLKv-8pOX5O2H", pattern="^Data.*\\.zip$"), what = "modified_time")
 a                  <- arrange(a, by = desc(modified_time))[1,] # Select most recent "Data" zip file
 if(dir.exists(file.path(here(..=1),"Data"))){
          Date.CurrentFolder <- as_datetime(file.info(paste0(file.path(here(..=1)),"/Data"))$mtime)
@@ -54,8 +54,10 @@ Area.List    <- c("Tutuila","Manua")
 
 # Run CPUE standardization for all species, areas combined in a loop
 for(i in 1:length(Species.List)){
-    Standardize_CPUE3(Sp=Species.List[i],Interaction=T,minYr=1988,maxYr=2015)
+    Standardize_CPUE2(Sp=Species.List[i],Interaction=T,minYr=2016,maxYr=2021) #TODO: once I get new data change maxYr to latest year
 }
+#TODO: ETCO 2021 CPUE value is off from benchmark (benchmark - 2.665 (0.21), now - 2.919 (1.18))
+# NOTE: I think it might have been a typo when combining all of the index values. It looks like values from LERU 2016-2021 all got shifted up one row in table 7-8 of assessment report.
 
 
 # Or run a single model
