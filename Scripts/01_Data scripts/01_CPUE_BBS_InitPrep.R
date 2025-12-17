@@ -1,12 +1,11 @@
 #  --------------------------------------------------------------------------------------------------------------
-#   AMERICAN SAMOA BOTTOMFISH - INITIAL DATA HANDLING 01_BBS_data_prep.R
+#   AMERICAN SAMOA BOTTOMFISH - INITIAL DATA HANDLING 00_download_data_MO.R
 #	Data preparation for BOAT BASED creel survey: 
-#   *** data updated Oct 6, 2021 with data received from Penlong JIRA ticket 113156
-#	    should be ALL interviews, all gears, all years, all species, etc., through 2020
-#   *** data updated March 25 2022 with data received from Dios JIRA ticket 113220
-#	    should be ALL interviews, all gears, all species, etc., for just 2021
-#	Erin Bohaboy erin.bohaboy@noaa.gov
-#  modified by Marc Nadon marc.nadon@noaa.gov
+#   *** data updated 12/16/25 with data directly queried through MySQL
+#	    should be ALL interviews, all gears, all years, all species, etc., through 2024
+#	Original code written by Erin Bohaboy
+#  modified by Marc Nadon marc.nadon@noaa.gov 
+#  updated by Meg Oshima megumi.oshima@noaa.gov for 2026 update assessment
 #		includes some code written by John Syslo for the 2019 assessment
 #  --------------------------------------------------------------------------------------------------------------
 
@@ -20,11 +19,12 @@
 #  --------------------------------------------------------------------------------------------------------------
 #  STEP 1: read in 4 "flatview" datafiles, followed by some basic data handling
 
-   aint_bbs1 <- fread(paste0(root_dir, "/Data/a_bbs_int_flat1.csv"), header=T,  stringsAsFactors=FALSE) 			
-   aint_bbs2 <- fread(paste0(root_dir, "/Data/a_bbs_int_flat2.csv"), header=T, stringsAsFactors=FALSE) 			
-   aint_bbs3 <- fread(paste0(root_dir, "/Data/a_bbs_int_flat3.csv"), header=T, stringsAsFactors=FALSE) 			
-   aint_bbs4 <- fread(paste0(root_dir, "/Data/a_bbs_int_flat4.csv"), header=T, stringsAsFactors=FALSE)
-   aint_bbs5 <- fread(paste0(root_dir, "/Data/PICDR-113220 BB Creel Data_all_columns.csv"), header=T, stringsAsFactors=FALSE)
+   #A <- read_rds(fs::path(root_dir,"Data","a_interview_bbs.rds"))
+   aint_bbs1 <- fread(paste0(root_dir, "/Data/2023_data/a_bbs_int_flat1.csv"), header=T,  stringsAsFactors=FALSE) 			
+   aint_bbs2 <- fread(paste0(root_dir, "/Data/2023_data/a_bbs_int_flat2.csv"), header=T, stringsAsFactors=FALSE) 			
+   aint_bbs3 <- fread(paste0(root_dir, "/Data/2023_data/a_bbs_int_flat3.csv"), header=T, stringsAsFactors=FALSE) 			
+   aint_bbs4 <- fread(paste0(root_dir, "/Data/2023_data/a_bbs_int_flat4.csv"), header=T, stringsAsFactors=FALSE)
+   aint_bbs5 <- fread(paste0(root_dir, "/Data/2023_data/PICDR-113220 BB Creel Data_all_columns.csv"), header=T, stringsAsFactors=FALSE)
 	
    aint_bbs5 <- aint_bbs5[,-62]       # drop var 62 ('COMMON_NAME') which is duplicated		
 	
@@ -34,12 +34,12 @@
    aint_bbs4             <- select(aint_bbs4,-YEAR)
 	
    A <- rbind.data.frame(aint_bbs1, aint_bbs2, aint_bbs3, aint_bbs4, aint_bbs5) # rbind coerce variable formats in the dfs to match		
-   length(unique(A$INTERVIEW_PK))
-  
+   length(unique(A$INTERVIEW_PK)) #15121
+
    A$YEAR         <- as.numeric(year(A$SAMPLE_DATE))
     
    # Filter for the two bottomfishing methods 
-   length(unique(A[YEAR>=2016&(METHOD_FK==4|METHOD_FK==5)]$INTERVIEW_PK))
+   length(unique(A[YEAR>=2016&(METHOD_FK==4|METHOD_FK==5)]$INTERVIEW_PK)) #411
    A <- A[METHOD_FK==4|METHOD_FK==5] ; length(unique(A[YEAR>=2016&METHOD_FK==4]$INTERVIEW_PK))
    
    # -- 99 interviews flagged as incomplete
