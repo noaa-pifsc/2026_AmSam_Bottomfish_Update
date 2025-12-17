@@ -120,9 +120,9 @@ Build_All_SS <- function(species,
 
   # Control and data file inputs
   if(readGoogle == T){
-      ctl.params <- read_sheet("1W7jxBKggU4yD_c2vWLO1F5hm6WYPC5hys_D9Rgm4FLk", 
+      ctl.params <- read_sheet("1ue6Sx0hZW0suCysH5RHnf2aOmoyT7iIoRDRnVkaJk_g", 
                            sheet=species)
-      ctl.inputs <- read_sheet("1AS3WUpNYmyZPcHn1cJUxxEPo4-27dXmJDt6bFug1t50", sheet=scenario)
+      ctl.inputs <- read_sheet("1tOZ5aaswEgxugTn0YsSSQaSkQOg8pM4-WJUDeVT2yA4", sheet=scenario)
   
   }else{
     ctl.inputs <- readxl::read_excel(file.path(root_dir, "Data", "CTL_inputs.xlsx"), sheet=scenario)

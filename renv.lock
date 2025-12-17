@@ -2706,85 +2706,6 @@
       "Maintainer": "GÃ¡bor CsÃ¡rdi <csardi.gabor@gmail.com>",
       "Repository": "CRAN"
     },
-    "furrr": {
-      "Package": "furrr",
-      "Version": "0.3.1",
-      "Source": "Repository",
-      "Title": "Apply Mapping Functions in Parallel using Futures",
-      "Authors@R": "c( person(\"Davis\", \"Vaughan\", , \"davis@rstudio.com\", role = c(\"aut\", \"cre\")), person(\"Matt\", \"Dancho\", , \"mdancho@business-science.io\", role = \"aut\"), person(\"RStudio\", role = c(\"cph\", \"fnd\")) )",
-      "Description": "Implementations of the family of map() functions from 'purrr' that can be resolved using any 'future'-supported backend, e.g. parallel on the local machine or distributed on a compute cluster.",
-      "License": "MIT + file LICENSE",
-      "URL": "https://github.com/DavisVaughan/furrr, https://furrr.futureverse.org/",
-      "BugReports": "https://github.com/DavisVaughan/furrr/issues",
-      "Depends": [
-        "future (>= 1.25.0)",
-        "R (>= 3.4.0)"
-      ],
-      "Imports": [
-        "globals (>= 0.14.0)",
-        "lifecycle (>= 1.0.1)",
-        "purrr (>= 0.3.4)",
-        "rlang (>= 1.0.2)",
-        "vctrs (>= 0.4.1)"
-      ],
-      "Suggests": [
-        "carrier",
-        "covr",
-        "dplyr (>= 0.7.4)",
-        "knitr",
-        "listenv (>= 0.6.0)",
-        "magrittr",
-        "rmarkdown",
-        "testthat (>= 3.0.0)",
-        "tidyselect",
-        "withr"
-      ],
-      "Config/Needs/website": "progressr",
-      "Config/testthat/edition": "3",
-      "Encoding": "UTF-8",
-      "RoxygenNote": "7.2.1",
-      "NeedsCompilation": "no",
-      "Author": "Davis Vaughan [aut, cre], Matt Dancho [aut], RStudio [cph, fnd]",
-      "Maintainer": "Davis Vaughan <davis@rstudio.com>",
-      "Repository": "CRAN"
-    },
-    "future": {
-      "Package": "future",
-      "Version": "1.40.0",
-      "Source": "Repository",
-      "Title": "Unified Parallel and Distributed Processing in R for Everyone",
-      "Depends": [
-        "R (>= 3.2.0)"
-      ],
-      "Imports": [
-        "digest",
-        "globals (>= 0.16.1)",
-        "listenv (>= 0.8.0)",
-        "parallel",
-        "parallelly (>= 1.43.0)",
-        "utils"
-      ],
-      "Suggests": [
-        "methods",
-        "RhpcBLASctl",
-        "R.rsp",
-        "markdown"
-      ],
-      "VignetteBuilder": "R.rsp",
-      "Authors@R": "c(person(\"Henrik\", \"Bengtsson\", role = c(\"aut\", \"cre\", \"cph\"), email = \"henrikb@braju.com\", comment = c(ORCID = \"0000-0002-7579-5165\")))",
-      "Description": "The purpose of this package is to provide a lightweight and unified Future API for sequential and parallel processing of R expression via futures.  The simplest way to evaluate an expression in parallel is to use `x %<-% { expression }` with `plan(multisession)`. This package implements sequential, multicore, multisession, and cluster futures.  With these, R expressions can be evaluated on the local machine, in parallel a set of local machines, or distributed on a mix of local and remote machines. Extensions to this package implement additional backends for processing futures via compute cluster schedulers, etc. Because of its unified API, there is no need to modify any code in order switch from sequential on the local machine to, say, distributed processing on a remote compute cluster. Another strength of this package is that global variables and functions are automatically identified and exported as needed, making it straightforward to tweak existing code to make use of futures.",
-      "License": "LGPL (>= 2.1)",
-      "LazyLoad": "TRUE",
-      "ByteCompile": "TRUE",
-      "URL": "https://future.futureverse.org, https://github.com/futureverse/future",
-      "BugReports": "https://github.com/futureverse/future/issues",
-      "Encoding": "UTF-8",
-      "RoxygenNote": "7.3.2",
-      "NeedsCompilation": "no",
-      "Author": "Henrik Bengtsson [aut, cre, cph] (<https://orcid.org/0000-0002-7579-5165>)",
-      "Maintainer": "Henrik Bengtsson <henrikb@braju.com>",
-      "Repository": "CRAN"
-    },
     "gamm4": {
       "Package": "gamm4",
       "Version": "0.2-7",
@@ -3745,30 +3666,6 @@
       "NeedsCompilation": "no",
       "Author": "GÃ¡bor CsÃ¡rdi [aut, cre], RStudio [cph, fnd]",
       "Maintainer": "GÃ¡bor CsÃ¡rdi <csardi.gabor@gmail.com>",
-      "Repository": "CRAN"
-    },
-    "globals": {
-      "Package": "globals",
-      "Version": "0.16.3",
-      "Source": "Repository",
-      "Depends": [
-        "R (>= 3.1.2)"
-      ],
-      "Imports": [
-        "codetools"
-      ],
-      "Title": "Identify Global Objects in R Expressions",
-      "Authors@R": "c( person(\"Henrik\", \"Bengtsson\", role=c(\"aut\", \"cre\", \"cph\"), email=\"henrikb@braju.com\"), person(\"Davis\",\"Vaughan\", role=\"ctb\", email=\"davis@rstudio.com\"))",
-      "Description": "Identifies global (\"unknown\" or \"free\") objects in R expressions by code inspection using various strategies (ordered, liberal, or conservative).  The objective of this package is to make it as simple as possible to identify global objects for the purpose of exporting them in parallel, distributed compute environments.",
-      "License": "LGPL (>= 2.1)",
-      "LazyLoad": "TRUE",
-      "ByteCompile": "TRUE",
-      "URL": "https://globals.futureverse.org, https://github.com/HenrikBengtsson/globals",
-      "BugReports": "https://github.com/HenrikBengtsson/globals/issues",
-      "RoxygenNote": "7.3.1",
-      "NeedsCompilation": "no",
-      "Author": "Henrik Bengtsson [aut, cre, cph], Davis Vaughan [ctb]",
-      "Maintainer": "Henrik Bengtsson <henrikb@braju.com>",
       "Repository": "CRAN"
     },
     "glue": {
@@ -4992,32 +4889,6 @@
       "Maintainer": "Lionel Henry <lionel@posit.co>",
       "Repository": "CRAN"
     },
-    "listenv": {
-      "Package": "listenv",
-      "Version": "0.9.1",
-      "Source": "Repository",
-      "Depends": [
-        "R (>= 3.1.2)"
-      ],
-      "Suggests": [
-        "R.utils",
-        "R.rsp",
-        "markdown"
-      ],
-      "VignetteBuilder": "R.rsp",
-      "Title": "Environments Behaving (Almost) as Lists",
-      "Authors@R": "c(person(\"Henrik\", \"Bengtsson\", role=c(\"aut\", \"cre\", \"cph\"), email = \"henrikb@braju.com\"))",
-      "Description": "List environments are environments that have list-like properties.  For instance, the elements of a list environment are ordered and can be accessed and iterated over using index subsetting, e.g. 'x <- listenv(a = 1, b = 2); for (i in seq_along(x)) x[[i]] <- x[[i]] ^ 2; y <- as.list(x)'.",
-      "License": "LGPL (>= 2.1)",
-      "LazyLoad": "TRUE",
-      "URL": "https://listenv.futureverse.org, https://github.com/HenrikBengtsson/listenv",
-      "BugReports": "https://github.com/HenrikBengtsson/listenv/issues",
-      "RoxygenNote": "7.3.1",
-      "NeedsCompilation": "no",
-      "Author": "Henrik Bengtsson [aut, cre, cph]",
-      "Maintainer": "Henrik Bengtsson <henrikb@braju.com>",
-      "Repository": "CRAN"
-    },
     "litedown": {
       "Package": "litedown",
       "Version": "0.7",
@@ -6000,35 +5871,6 @@
       "Repository": "https://packagemanager.posit.co/cran/latest",
       "Encoding": "UTF-8"
     },
-    "parallelly": {
-      "Package": "parallelly",
-      "Version": "1.43.0",
-      "Source": "Repository",
-      "Title": "Enhancing the 'parallel' Package",
-      "Imports": [
-        "parallel",
-        "tools",
-        "utils"
-      ],
-      "Suggests": [
-        "commonmark",
-        "base64enc"
-      ],
-      "VignetteBuilder": "parallelly",
-      "Authors@R": "c( person(\"Henrik\", \"Bengtsson\", role = c(\"aut\", \"cre\", \"cph\"), email = \"henrikb@braju.com\", comment = c(ORCID = \"0000-0002-7579-5165\")), person(\"Mike\", \"Cheng\", role = c(\"ctb\"), email = \"mikefc@coolbutuseless.com\") )",
-      "Description": "Utility functions that enhance the 'parallel' package and support the built-in parallel backends of the 'future' package.  For example, availableCores() gives the number of CPU cores available to your R process as given by the operating system, 'cgroups' and Linux containers, R options, and environment variables, including those set by job schedulers on high-performance compute clusters. If none is set, it will fall back to parallel::detectCores(). Another example is makeClusterPSOCK(), which is backward compatible with parallel::makePSOCKcluster() while doing a better job in setting up remote cluster workers without the need for configuring the firewall to do port-forwarding to your local computer.",
-      "License": "LGPL (>= 2.1)",
-      "LazyLoad": "TRUE",
-      "ByteCompile": "TRUE",
-      "URL": "https://parallelly.futureverse.org, https://github.com/futureverse/parallelly",
-      "BugReports": "https://github.com/futureverse/parallelly/issues",
-      "Encoding": "UTF-8",
-      "RoxygenNote": "7.3.2",
-      "NeedsCompilation": "yes",
-      "Author": "Henrik Bengtsson [aut, cre, cph] (<https://orcid.org/0000-0002-7579-5165>), Mike Cheng [ctb]",
-      "Maintainer": "Henrik Bengtsson <henrikb@braju.com>",
-      "Repository": "CRAN"
-    },
     "patchwork": {
       "Package": "patchwork",
       "Version": "1.3.2",
@@ -6803,63 +6645,56 @@
     },
     "r4ss": {
       "Package": "r4ss",
-      "Version": "1.51.0",
+      "Version": "1.46.1",
       "Source": "GitHub",
       "Type": "Package",
       "Title": "R Code for Stock Synthesis",
-      "Authors@R": "c( person(\"Ian G.\", \"Taylor\", , \"Ian.Taylor@noaa.gov\", role = c(\"aut\", \"cre\")), person(\"Ian J.\", \"Stewart\", role = \"aut\"), person(\"Allan C.\", \"Hicks\", role = \"aut\"), person(\"Tommy M.\", \"Garrison\", role = \"aut\"), person(\"Andre E.\", \"Punt\", role = \"aut\"), person(\"R.I.C. Chris\", \"Francis\", role = \"aut\"), person(\"John R.\", \"Wallace\", role = \"aut\"), person(\"Chantel R.\", \"Wetzel\", role = \"aut\"), person(\"James T.\", \"Thorson\", role = \"aut\"), person(\"Yukio\", \"Takeuchi\", role = \"aut\"), person(\"Kotaro\", \"Ono\", role = \"aut\"), person(\"Cole C.\", \"Monnahan\", role = \"aut\"), person(\"Christine C.\", \"Stawitz\", role = \"aut\"), person(\"Z. Teresa\", \"A'mar\", role = \"aut\"), person(\"Athol R.\", \"Whitten\", role = \"aut\"), person(\"Kelli F.\", \"Johnson\", role = \"aut\"), person(\"Robbie L.\", \"Emmet\", role = \"aut\"), person(\"Sean C.\", \"Anderson\", role = \"aut\"), person(\"Gwladys I.\", \"Lambert\", role = \"aut\"), person(\"Megan M.\", \"Stachura\", role = \"aut\"), person(\"Andrew B.\", \"Cooper\", role = \"aut\"), person(\"Andi\", \"Stephens\", role = \"aut\"), person(\"Neil L.\", \"Klaer\", role = \"aut\"), person(\"Carey R.\", \"McGilliard\", role = \"aut\"), person(\"Iago\", \"Mosqueira\", role = \"aut\"), person(\"Watal M.\", \"Iwasaki\", role = \"aut\"), person(\"Kathryn L.\", \"Doering\", role = \"aut\"), person(\"Andrea M.\", \"Havron\", role = \"aut\"), person(\"Nathan R.\", \"Vaughan\", role = \"aut\"), person(\"LaTreese S.\", \"Denson\", role = \"aut\"), person(\"Ashleigh J.\", \"Novak\", role = \"aut\"), person(\"Henning\", \"Winker\", role = \"aut\"), person(\"Lee\", \"Qi\", role = \"aut\"), person(\"Megumi\", \"Oshima\", role = \"aut\"), person(\"Eric\", \"Fletcher\", role = \"aut\"), person(\"Elizabeth F.\", \"Gugliotti\", role = \"aut\"), person(\"Kiva L.\", \"Oken\", role = \"aut\") )",
-      "Description": "A collection of R functions for use with Stock Synthesis, a fisheries stock assessment modeling platform written in ADMB by Dr. Richard D. Methot at the NOAA Northwest Fisheries Science Center. The functions include tools for summarizing and plotting results, manipulating files, visualizing model parameterizations, and various other common stock assessment tasks.  This version of '{r4ss}' is compatible with Stock Synthesis versions 3.24 through 3.30 (specifically version 3.30.23.1, from December 2024). Support for 3.24 models is only through the core functions for reading output and plotting.",
-      "License": "GPL-3",
-      "URL": "https://github.com/r4ss/r4ss, https://r4ss.github.io/r4ss/",
-      "BugReports": "https://github.com/r4ss/r4ss/issues",
+      "Authors@R": "c(person(given = \"Ian G.\", family = \"Taylor\", email = \"Ian.Taylor@noaa.gov\", role = c(\"aut\",\"cre\")), person(given = \"Ian J.\", family = \"Stewart\", role = \"aut\"), person(given = \"Allan C.\", family = \"Hicks\", role = \"aut\"), person(given = \"Tommy M.\", family = \"Garrison\", role = \"aut\"), person(given = \"Andre E.\", family = \"Punt\", role = \"aut\"), person(given = \"R.I.C. Chris\", family = \"Francis\", role = \"aut\"), person(given = \"John R.\", family = \"Wallace\", role = \"aut\"), person(given = \"Chantel R.\", family = \"Wetzel\", role = \"aut\"), person(given = \"James T.\", family = \"Thorson\", role = \"aut\"), person(given = \"Yukio\", family = \"Takeuchi\", role = \"aut\"), person(given = \"Kotaro\", family = \"Ono\", role = \"aut\"), person(given = \"Cole C.\", family = \"Monnahan\", role = \"aut\"), person(given = \"Christine C.\", family = \"Stawitz\", role = \"aut\"), person(given = \"Z. Teresa\", family = \"A'mar\", role = \"aut\"), person(given = \"Athol R.\", family = \"Whitten\", role = \"aut\"), person(given = \"Kelli F.\", family = \"Johnson\", role = \"aut\"), person(given = \"Robbie L.\", family = \"Emmet\", role = \"aut\"), person(given = \"Sean C.\", family = \"Anderson\", role = \"aut\"), person(given = \"Gwladys I.\", family = \"Lambert\", role = \"aut\"), person(given = \"Megan M.\", family = \"Stachura\", role = \"aut\"), person(given = \"Andrew B.\", family = \"Cooper\", role = \"aut\"), person(given = \"Andi\", family = \"Stephens\", role = \"aut\"), person(given = \"Neil L.\", family = \"Klaer\", role = \"aut\"), person(given = \"Carey R.\", family = \"McGilliard\", role = \"aut\"), person(given = \"Iago\", family = \"Mosqueira\", role = \"aut\"), person(given = \"Watal M.\", family = \"Iwasaki\", role = \"aut\"), person(given = \"Kathryn L.\", family = \"Doering\", role = \"aut\"), person(given = \"Andrea M.\", family = \"Havron\", role = \"aut\"), person(given = \"Nathan R.\", family = \"Vaughan\", role = \"aut\"), person(given = \"LaTreese S.\", family = \"Denson\", role = \"aut\"), person(given = \"Ashleigh J.\", family = \"Novak\", role = \"aut\"), person(given = \"Henning\", family = \"Winker\", role = \"aut\"), person(given = \"Lee\", family = \"Qi\", role = \"aut\"), person(given = \"Megumi\", family = \"Oshima\", role = \"aut\"), person(given = \"Eric\", family = \"Fletcher\", role = \"aut\"))",
       "Depends": [
-        "R (>= 4.1.0)"
+        "R (>= 3.5.0)"
       ],
       "Imports": [
         "coda",
         "corpcor",
         "dplyr",
         "forcats",
-        "furrr",
-        "future",
         "ggplot2",
-        "gh",
         "kableExtra",
         "lifecycle",
-        "purrr",
         "stringr",
-        "tidyr",
-        "viridis"
+        "tidyr"
       ],
       "Suggests": [
-        "flextable",
-        "ggpubr",
-        "gplots",
         "gtools",
+        "gplots",
         "knitr",
         "maps",
-        "parallelly",
         "pso",
-        "reshape2",
+        "testthat",
+        "truncnorm",
         "rmarkdown",
         "shiny",
-        "testthat",
-        "truncnorm"
+        "flextable",
+        "reshape2",
+        "ggpubr"
       ],
-      "VignetteBuilder": "knitr",
+      "Description": "A collection of R functions for use with Stock Synthesis, a fisheries stock assessment modeling platform written in ADMB by Dr. Richard D. Methot at the NOAA Northwest Fisheries Science Center. The functions include tools for summarizing and plotting results, manipulating files, visualizing model parameterizations, and various other common stock assessment tasks. This version of '{r4ss}' is compatible with Stock Synthesis versions 3.24 through 3.30 (specifically version 3.30.19.01, from April 2022).",
+      "License": "GPL-3",
       "Encoding": "UTF-8",
-      "Language": "en-US",
       "LazyLoad": "yes",
+      "URL": "https://github.com/r4ss/r4ss",
+      "BugReports": "https://github.com/r4ss/r4ss/issues",
+      "RoxygenNote": "7.2.1",
+      "VignetteBuilder": "knitr",
       "Roxygen": "list(markdown = TRUE)",
-      "RoxygenNote": "7.3.2",
-      "Author": "Ian G. Taylor [aut, cre], Ian J. Stewart [aut], Allan C. Hicks [aut], Tommy M. Garrison [aut], Andre E. Punt [aut], R.I.C. Chris Francis [aut], John R. Wallace [aut], Chantel R. Wetzel [aut], James T. Thorson [aut], Yukio Takeuchi [aut], Kotaro Ono [aut], Cole C. Monnahan [aut], Christine C. Stawitz [aut], Z. Teresa A'mar [aut], Athol R. Whitten [aut], Kelli F. Johnson [aut], Robbie L. Emmet [aut], Sean C. Anderson [aut], Gwladys I. Lambert [aut], Megan M. Stachura [aut], Andrew B. Cooper [aut], Andi Stephens [aut], Neil L. Klaer [aut], Carey R. McGilliard [aut], Iago Mosqueira [aut], Watal M. Iwasaki [aut], Kathryn L. Doering [aut], Andrea M. Havron [aut], Nathan R. Vaughan [aut], LaTreese S. Denson [aut], Ashleigh J. Novak [aut], Henning Winker [aut], Lee Qi [aut], Megumi Oshima [aut], Eric Fletcher [aut], Elizabeth F. Gugliotti [aut], Kiva L. Oken [aut]",
+      "Author": "Ian G. Taylor [aut, cre], Ian J. Stewart [aut], Allan C. Hicks [aut], Tommy M. Garrison [aut], Andre E. Punt [aut], R.I.C. Chris Francis [aut], John R. Wallace [aut], Chantel R. Wetzel [aut], James T. Thorson [aut], Yukio Takeuchi [aut], Kotaro Ono [aut], Cole C. Monnahan [aut], Christine C. Stawitz [aut], Z. Teresa A'mar [aut], Athol R. Whitten [aut], Kelli F. Johnson [aut], Robbie L. Emmet [aut], Sean C. Anderson [aut], Gwladys I. Lambert [aut], Megan M. Stachura [aut], Andrew B. Cooper [aut], Andi Stephens [aut], Neil L. Klaer [aut], Carey R. McGilliard [aut], Iago Mosqueira [aut], Watal M. Iwasaki [aut], Kathryn L. Doering [aut], Andrea M. Havron [aut], Nathan R. Vaughan [aut], LaTreese S. Denson [aut], Ashleigh J. Novak [aut], Henning Winker [aut], Lee Qi [aut], Megumi Oshima [aut], Eric Fletcher [aut]",
       "Maintainer": "Ian G. Taylor <Ian.Taylor@noaa.gov>",
       "RemoteType": "github",
       "RemoteHost": "api.github.com",
       "RemoteUsername": "r4ss",
       "RemoteRepo": "r4ss",
-      "RemoteRef": "v1.51.0",
-      "RemoteSha": "a780061d8701121c0ac7ed0500fbd60782b923c1"
+      "RemoteRef": "v1.46.1",
+      "RemoteSha": "37b89fe4046fd271fa76548779e36b22276a0910"
     },
     "ragg": {
       "Package": "ragg",

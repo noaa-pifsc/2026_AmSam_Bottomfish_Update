@@ -23,7 +23,7 @@ cl    <- makeCluster (9)
 #lapply(list(Lt[[1]]),function(x)     { # Run a single model at a time
 parLapply(cl,Lt,function(x){ # Run all models in parallel
   
-  DirName    <- "199_Linf_Estimated" # Name of directory to create for this model run
+  DirName    <- "001_recreate" # Name of directory to create for this model run
   runmodels  <- T   # Turn off if you want to process results only
   printreport<- F   # Turn off to skip ss_diags report
   Create_species_report_figs <- F # Turn on to produce formatted figures and tables word document. Run after running all r4ss plots and diags
