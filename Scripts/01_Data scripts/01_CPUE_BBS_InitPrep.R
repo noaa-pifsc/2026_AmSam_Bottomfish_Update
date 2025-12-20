@@ -132,6 +132,10 @@
 # However, it seems most likely that P. rutilans was actually P. flavipinnis, given they share the local name "palu sina" 
 #	Fishermen workshops confirmed the name Palu-sina for P. flavipinnis, we concluded 'P. rutilans' (SPECIES_PK 243) is P. flavipinnis 
 # Replace SPECIES_FK 243 (Pristipomoides rutilans) with 241 (Pristipomoides flavipinnis)
+   # pfl.intpk <- A[SPECIES_FK==243]$INTERVIEW_PK
+   # pfl.catpk <- A[SPECIES_FK==243]$CATCH_PK
+   # save(list = c("pfl.intpk", "pfl.catpk"), file = file.path(root_dir, "Data", "pfl_pk.RDS"))
+   
    A[SPECIES_FK==243]$SCIENTIFIC_NAME <- "Pristipomoides flavipinnis"
    A[SPECIES_FK==243]$SPECIES_FK      <- 241
 
@@ -212,7 +216,7 @@ for (i in 1:length(CATCH_PK.list)){
 # calculate proportion of P. filamentosus vs P. flavipinnis for Years > 2015
 
 Prop.Pristi <- B[,list(EST_LBS=max(EST_LBS)),by=list(YEAR,INTERVIEW_PK,CATCH_PK,SPECIES_FK,SCIENTIFIC_NAME)]
-Prop.Pristi <- Prop.Pristi[YEAR>2015&(SPECIES_FK=="241"|SPECIES_FK=="242"),list(EST_LBS=sum(EST_LBS)),by=list(SPECIES_FK,SCIENTIFIC_NAME)]
+Prop.Pristi <- Prop.Pristi[YEAR>2015&(SPECIES_FK=="241"|SPECIES_FK=="242"|SPECIES_FK =="243"),list(EST_LBS=sum(EST_LBS)),by=list(SPECIES_FK,SCIENTIFIC_NAME)]
 Prop.Flavi  <- Prop.Pristi[SPECIES_FK=="241"]$EST_LBS/(Prop.Pristi[SPECIES_FK=="241"]$EST_LBS+Prop.Pristi[SPECIES_FK=="242"]$EST_LBS)
 Prop.Flavi  <- round(Prop.Flavi,3)
 
@@ -305,9 +309,9 @@ B <- B[,list(EST_LBS=sum(EST_LBS)),by=list(INTERVIEW_PK,CATCH_PK,AREA_C,YEAR,SEA
 B <- B[order(SAMPLE_DATE,INTERVIEW_TIME_LOCAL,INTERVIEW_PK)]
 
 # save in nullfile()# save in the output folder.
-length(unique(B[YEAR>=2016]$INTERVIEW_PK)) #3203  #3205
-length(unique(B[METHOD_FK==4&YEAR>=2016]$INTERVIEW_PK)) #2427  #2428
-length(unique(B[METHOD_FK==5&YEAR>=2016]$INTERVIEW_PK)) #776   #777
+length(unique(B[YEAR>=2016]$INTERVIEW_PK)) #399
+length(unique(B[METHOD_FK==4&YEAR>=2016]$INTERVIEW_PK)) #295
+length(unique(B[METHOD_FK==5&YEAR>=2016]$INTERVIEW_PK)) #104
 
 length(unique(B[YEAR>=2016&METHOD_FK=="4"]$INTERVIEW_PK))
 

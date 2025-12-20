@@ -18,7 +18,7 @@ D <- mutate(D,YEAR = as.numeric(substr(SPC_PK,2,5)), METHOD = substr(SPC_PK,11,1
                    ZONE = substr(SPC_PK,14,14), TYPE = substr(SPC_PK,20,21), 
                    CHARTER = substr(SPC_PK,22,22), PROCESS = substr(SPC_PK,23,23))
 
-D[is.na(VAR_LBS_CAUGHT)]$VAR_LBS_CAUGHT <- 0 # IS this necessary? Does it have an impact?
+D[is.na(VAR_LBS_CAUGHT)]$VAR_LBS_CAUGHT <- 0 # IS this necessary? Does it have an impact? 
 
 D[ZONE=='1']$ZONE<-'Tutuila'			# note banks trips are included in Tutuila expansion
 D[ZONE=='2']$ZONE<-'Manua'
