@@ -25,7 +25,10 @@
    aint_bbs3 <- fread(paste0(root_dir, "/Data/2023_data/a_bbs_int_flat3.csv"), header=T, stringsAsFactors=FALSE) 			
    aint_bbs4 <- fread(paste0(root_dir, "/Data/2023_data/a_bbs_int_flat4.csv"), header=T, stringsAsFactors=FALSE)
    aint_bbs5 <- fread(paste0(root_dir, "/Data/2023_data/PICDR-113220 BB Creel Data_all_columns.csv"), header=T, stringsAsFactors=FALSE)
-	
+   #New data up to 2024
+   aint_bbs6 <- readr::read_rds(fs::path(root_dir, "Data", "a_interview_bbs.rds"))
+   aint_bbs6 <- as.data.table(aint_bbs6)
+   
    aint_bbs5 <- aint_bbs5[,-62]       # drop var 62 ('COMMON_NAME') which is duplicated		
 	
   # aint_bbs4 included 2021 interviews through May. Remove these records because they are also in aint_bbs5
@@ -33,13 +36,29 @@
    aint_bbs4             <- aint_bbs4[YEAR < 2021]								
    aint_bbs4             <- select(aint_bbs4,-YEAR)
 	
-   A <- rbind.data.frame(aint_bbs1, aint_bbs2, aint_bbs3, aint_bbs4, aint_bbs5) # rbind coerce variable formats in the dfs to match		
-   length(unique(A$INTERVIEW_PK)) #15121
+  # remove years prior to 2022 in aint_bbs6 because it includes records all the way from 1986 but just tacking new data onto old data for update
+   aint_bbs6$YEAR <- year(aint_bbs6$SAMPLE_DATE)
+   aint_bbs6 <- aint_bbs6[YEAR > 2021]
+   aint_bbs6 <- select(aint_bbs6, -YEAR)
+   # convert LEN_CM column to LEN_MM to match format of other data.tables
+   aint_bbs6$LEN_MM <- (aint_bbs6$LEN_CM)*10
+   aint_bbs6$LEN_MM_TYPE <- aint_bbs6$LEN_CM_TYPE 
+   aint_bbs6 <- select(aint_bbs6, -c(LEN_CM, LEN_CM_TYPE))
+   # adding dummy columns so ncols matches with other data.tables
+   # should be ok bc these columns aren't used for anything later on
+   aint_bbs6$PRICE_LB_TYPE_FK <- NA
+   aint_bbs6$PRICE_LB_TYPE <- NA
+   # remove 9 rows of incomplete interview info, SCIENTIFIC_NAME COMMON_NAME LOCAL_NAME LEN_MM EST_LBS all NA
+   aint_bbs6 <- aint_bbs6 %>% 
+    filter(!is.na(EST_LBS)) 
+   
+   A <- rbind.data.frame(aint_bbs1, aint_bbs2, aint_bbs3, aint_bbs4, aint_bbs5, aint_bbs6) # rbind coerce variable formats in the dfs to match		
+   length(unique(A$INTERVIEW_PK)) #15121 #with new data now 15369, added 248 rows
 
    A$YEAR         <- as.numeric(year(A$SAMPLE_DATE))
     
    # Filter for the two bottomfishing methods 
-   length(unique(A[YEAR>=2016&(METHOD_FK==4|METHOD_FK==5)]$INTERVIEW_PK)) #411
+   length(unique(A[YEAR>=2016&(METHOD_FK==4|METHOD_FK==5)]$INTERVIEW_PK)) #411 #update: 503
    A <- A[METHOD_FK==4|METHOD_FK==5] ; length(unique(A[YEAR>=2016&METHOD_FK==4]$INTERVIEW_PK))
    
    # -- 99 interviews flagged as incomplete
@@ -109,7 +128,8 @@
    A <- mutate(A, MOON_DAYS = round(MOON_RADIANS* (29.53/(2*pi)) ,digits=0) )  #  2pi radians = 29.53 days, so...
    
    # Add some large-scale environmental indices
-   ENV  <- read.xlsx(paste0(root_dir, "/Data/Environmental data.xlsx"))
+   ENV  <- read.csv(paste0(root_dir, "/Data/Environmental_data_2025.csv"))
+   ENV <- ENV[ENV$YEAR > 1987 & ENV$YEAR < 2025,] #added during 2026 update, previous Environmental data started in 1988 so wanted to keep consistent
    A    <- merge(A,ENV,by=c("YEAR","MONTH"),all.x=T)
    
    # Add some species-specific fields
@@ -182,7 +202,7 @@
   
 # calculate proportion of Variola louti vs albimarginata for Years > 2015
 	Prop.Variola <- B[,list(EST_LBS=max(EST_LBS)),by=list(YEAR,INTERVIEW_PK,CATCH_PK,SPECIES_FK,SCIENTIFIC_NAME)]
-	Prop.Variola <- Prop.Variola[YEAR>2015&(SPECIES_FK=="220"|SPECIES_FK=="229"),list(EST_LBS=sum(EST_LBS)),by=list(SPECIES_FK,SCIENTIFIC_NAME)]
+	Prop.Variola <- Prop.Variola[YEAR>2015&YEAR<2021&(SPECIES_FK=="220"|SPECIES_FK=="229"),list(EST_LBS=sum(EST_LBS)),by=list(SPECIES_FK,SCIENTIFIC_NAME)]
 	Prop.Louti   <- Prop.Variola[SPECIES_FK=="229"]$EST_LBS/(Prop.Variola[SPECIES_FK=="220"]$EST_LBS+Prop.Variola[SPECIES_FK=="229"]$EST_LBS)
   Prop.Louti   <- round(Prop.Louti,3)
 	
@@ -216,7 +236,7 @@ for (i in 1:length(CATCH_PK.list)){
 # calculate proportion of P. filamentosus vs P. flavipinnis for Years > 2015
 
 Prop.Pristi <- B[,list(EST_LBS=max(EST_LBS)),by=list(YEAR,INTERVIEW_PK,CATCH_PK,SPECIES_FK,SCIENTIFIC_NAME)]
-Prop.Pristi <- Prop.Pristi[YEAR>2015&(SPECIES_FK=="241"|SPECIES_FK=="242"|SPECIES_FK =="243"),list(EST_LBS=sum(EST_LBS)),by=list(SPECIES_FK,SCIENTIFIC_NAME)]
+Prop.Pristi <- Prop.Pristi[YEAR>2015&YEAR<2022&(SPECIES_FK=="241"|SPECIES_FK=="242"|SPECIES_FK =="243"),list(EST_LBS=sum(EST_LBS)),by=list(SPECIES_FK,SCIENTIFIC_NAME)]
 Prop.Flavi  <- Prop.Pristi[SPECIES_FK=="241"]$EST_LBS/(Prop.Pristi[SPECIES_FK=="241"]$EST_LBS+Prop.Pristi[SPECIES_FK=="242"]$EST_LBS)
 Prop.Flavi  <- round(Prop.Flavi,3)
 
@@ -309,9 +329,9 @@ B <- B[,list(EST_LBS=sum(EST_LBS)),by=list(INTERVIEW_PK,CATCH_PK,AREA_C,YEAR,SEA
 B <- B[order(SAMPLE_DATE,INTERVIEW_TIME_LOCAL,INTERVIEW_PK)]
 
 # save in nullfile()# save in the output folder.
-length(unique(B[YEAR>=2016]$INTERVIEW_PK)) #399
-length(unique(B[METHOD_FK==4&YEAR>=2016]$INTERVIEW_PK)) #295
-length(unique(B[METHOD_FK==5&YEAR>=2016]$INTERVIEW_PK)) #104
+length(unique(B[YEAR>=2016]$INTERVIEW_PK)) #399 #update 488, only added 89 interviews
+length(unique(B[METHOD_FK==4&YEAR>=2016]$INTERVIEW_PK)) #295 #update 365
+length(unique(B[METHOD_FK==5&YEAR>=2016]$INTERVIEW_PK)) #104 #update 123
 
 length(unique(B[YEAR>=2016&METHOD_FK=="4"]$INTERVIEW_PK))
 
