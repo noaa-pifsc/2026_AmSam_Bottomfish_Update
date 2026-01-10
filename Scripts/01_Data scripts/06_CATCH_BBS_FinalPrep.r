@@ -3,8 +3,9 @@ require(tidyverse); require(this.path); require(data.table); require(openxlsx)
 root_dir <- this.path::here(.. = 2)
 options(scipen = 999)
 
-D <- fread(paste0(root_dir, "/Data/AS_BBS_SPC_correctLog2.csv"), stringsAsFactors=FALSE) 
-
+D <- fread(paste0(root_dir, "/Data/2023_data/AS_BBS_SPC_correctLog2.csv"), stringsAsFactors=FALSE) 
+# d <- readr::read_rds(file.path(root_dir, "Data", "a_catch_bbs.rds"))
+# d <- d %>% filter(DATA_YEAR > 2021)
 # Add more species info
 S                 <- data.table(  read.xlsx(paste0(root_dir, "/Data/METADATA.xlsx"),sheet="ALLSPECIES")   )
 S                 <- select(S,SPECIES_PK,SCIENTIFIC_NAME,FAMILY)
@@ -149,7 +150,7 @@ D$SPECIES_FK <- as.character(D$SPECIES_FK)
 
 #======================Break down taxonomic groups into species components using proportion table from 03_BBS_proptables.R===============================
 
-PT            <- readRDS(paste0(root_dir, "/Outputs/BBS_Prop_Table.rds"))  # Species composition of groups, by group x period x region
+PT            <- readRDS(paste0(root_dir, "/Outputs/2023_outputs/BBS_Prop_Table.rds"))  # Species composition of groups, by group x period x region
 PT$GROUP_FK   <- paste0("S",PT$GROUP_FK)
 PT$SPECIES_FK <- paste0("S",PT$SPECIES_FK)
 
@@ -210,6 +211,8 @@ ggplot(data=test3[SPECIES_FK=="S229"])+geom_line(aes(x=YEAR,y=LBS_CAUGHT),col="b
 G <- Z[BMUS=="T",list(LBS_CAUGHT=sum(LBS_CAUGHT),VAR_LBS_CAUGHT=sum(VAR_LBS_CAUGHT)),by=list(SPECIES_FK,ZONE,YEAR)]
 G <- G[order(SPECIES_FK,ZONE,YEAR)]
 
+saveRDS(G, file = file.path(root_dir, "/Outputs/CATCH_BBS_G_Old.rds"))
+
 # Explore the Catch by Year and Area
 #EX <- merge(G,S,by.x="SPECIES_FK",by.y="SPECIES_PK")
 #EX <- EX %>% group_by(SCIENTIFIC_NAME,YEAR,ZONE) %>% summarize(LBS=sum(LBS_CAUGHT)) %>% as.data.table() %>% filter(SCIENTIFIC_NAME!="Etelis carbunculus"&SCIENTIFIC_NAME!="Pristipomoides filamentosus")
@@ -258,24 +261,27 @@ Results$KEEP <- ifelse(Results$PVALUE<=0.05,1,0)
 
 # Add 2009-2021 Manua catch based on regression results above.
 COEF <- select(Results[KEEP==1],SPECIES_FK,COEF)
+#stop here and rbind with new e dataframe 
 E    <- merge(E,COEF,by="SPECIES_FK")
+saveRDS(E, file = file.path(root_dir, "/Outputs/CATCH_BBS_E_Old.rds"))
 
+#Do the remainder of this in 06_CATCH_BBS_FinalPrep_new.r
 # Calculate 2009-2021 Manua catch based on Tutuila catch
-E[YEAR>=2009]$Manua <- E[YEAR>=2009]$Tutuila*E[YEAR>=2009]$COEF
-E                   <- select(E[YEAR>=2009],YEAR,SPECIES_FK,LBS_CAUGHT=Manua,)
-E$VAR_LBS_CAUGHT    <- 0 # Set to 0 for now
-E$ZONE              <- "Manua"
+# E[YEAR>=2009]$Manua <- E[YEAR>=2009]$Tutuila*E[YEAR>=2009]$COEF
+# E                   <- select(E[YEAR>=2009],YEAR,SPECIES_FK,LBS_CAUGHT=Manua,)
+# E$VAR_LBS_CAUGHT    <- 0 # Set to 0 for now
+# E$ZONE              <- "Manua"
 
-# Put back together
-G <- G[!(ZONE=="Manua"&YEAR>=2009)] # Remove old Manua catch
-G <- rbind(G,E)  
+# # Put back together
+# G <- G[!(ZONE=="Manua"&YEAR>=2009)] # Remove old Manua catch
+# G <- rbind(G,E)  
 
-# Save final boat-based catch file
+# # Save final boat-based catch file
 
-G$SOURCE <- "BBS"
-G$SD.LBS <- sqrt(G$VAR_LBS_CAUGHT)
-G        <- select(G,SOURCE,SPECIES_FK,YEAR,AREA_C=ZONE,LBS=LBS_CAUGHT,SD.LBS)
-saveRDS(G,file=paste0(root_dir, "/Outputs/CATCH_BBS_A.rds"))
+# G$SOURCE <- "BBS"
+# G$SD.LBS <- sqrt(G$VAR_LBS_CAUGHT)
+# G        <- select(G,SOURCE,SPECIES_FK,YEAR,AREA_C=ZONE,LBS=LBS_CAUGHT,SD.LBS)
+# saveRDS(G,file=paste0(root_dir, "/Outputs/2023_outputs/CATCH_BBS_A.rds"))
 
 
 
