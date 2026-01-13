@@ -41,7 +41,7 @@ D$SOURCE     <- "Historic"
 D$SD.LBS     <- 0
 D            <- select(D,SOURCE,SPECIES_FK,AREA_C,YEAR,LBS,SD.LBS)
 
-# Sum BBS and SBS catch accross areas
+# Sum BBS and SBS catch across areas
 #A <- A[,list(LBS=round(sum(LBS),0),SD.LBS=round(sum(SD.LBS),1)),by=list(SOURCE,SPECIES_FK,YEAR)]
 #B <- B[,list(LBS=round(sum(LBS),0),SD.LBS=round(sum(SD.LBS),1)),by=list(SOURCE,SPECIES_FK,YEAR)]
 
@@ -92,7 +92,7 @@ if(!exists(paste0(root_dir,"/Outputs/SS3_Inputs"))){
   dir.create(paste0(root_dir,"/Outputs/SS3_Inputs"),recursive=T,showWarnings=F)
 }
 
-write.csv(Z,paste0(root_dir,"/Outputs/SS3_Inputs/CATCH_Final.csv"),row.names=F)
+write.csv(Z,paste0(root_dir,"/Outputs/SS3_Inputs/CATCH_Final.csv"),row.names=FALSE)
 
 
 

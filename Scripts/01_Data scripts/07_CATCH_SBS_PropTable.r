@@ -5,10 +5,13 @@ options(scipen = 999)
 # establish directories using this.path::
 root_dir <- this.path::here(.. = 2)
 
+# ----------- STEP 0: Create d_sub with data for update 2022-2024 then read it in later
+source(file.path(root_dir,"/Scripts/01_Data scripts/07_CATCH_SBS_PropTable_new.r"))
+
 # ----------- STEP 1: read in the complete "flatview" datafile for AmSam Shore based survey, 
 #				do some data manipulation
 
-D <- fread(paste0(root_dir, "/Data/AmSam_SBS_Sep10.csv"), stringsAsFactors=FALSE) 
+D <- fread(paste0(root_dir, "/Data/2023_data/AmSam_SBS_Sep10.csv"), stringsAsFactors=FALSE) 
 R <- data.table(  read.xlsx(paste0(root_dir, "/Data/METADATA.xlsx"),sheet="AREAS")   );  R <- R[DATASET=="SBS"]
 R <- select(R,AREA_ID,AREA_NAME,AREA_C)
 M <- data.table(  read.xlsx(paste0(root_dir, "/Data/METADATA.xlsx"),sheet="METHODS") );  M <- M[DATASET=="SBS"]
@@ -27,8 +30,10 @@ M$METHOD_ID <- as.character((M$METHOD_ID))
 D <- D[SPECIES_FK!=245]
 
 # fix P. rutilans
-D[SPECIES_FK==243]$SPECIES_FK      <-241
-D[SPECIES_FK==243]$SCIENTIFIC_NAME <-'Pristipomoides flavipinnis'
+# D[SPECIES_FK==243]$SPECIES_FK      <-241
+D[SPECIES_FK == 243, SPECIES_FK := 241]
+# D[SPECIES_FK==243]$SCIENTIFIC_NAME <-'Pristipomoides flavipinnis'
+D[SPECIES_FK == 241, SCIENTIFIC_NAME := 'Pristipomoides flavipinnis']
 
 # keep only 1990 to 2020 (to match SB expanded landings from Hongguang). 
 D <- D[YEAR>=1990]
@@ -46,8 +51,8 @@ D <- D[,list(EST_LBS=max(EST_LBS)),by=list(INTERVIEW_PK,CATCH_PK,YEAR,SPECIES_FK
 # calculate proportion of Variola louti vs albimarginata for Years > 2015
 Prop.Variola <- D[,list(EST_LBS=max(EST_LBS)),by=list(YEAR,INTERVIEW_PK,CATCH_PK,SPECIES_FK)]
 Prop.Variola <- Prop.Variola[YEAR>2015&(SPECIES_FK=="220"|SPECIES_FK=="229"),list(EST_LBS=sum(EST_LBS)),by=list(SPECIES_FK)]
-Prop.Louti   <- Prop.Variola[SPECIES_FK=="229"]$EST_LBS/(Prop.Variola[SPECIES_FK=="220"]$EST_LBS+Prop.Variola[SPECIES_FK=="229"]$EST_LBS)
-Prop.Louti   <- round(Prop.Louti,3)
+Prop.Louti   <- Prop.Variola[SPECIES_FK=="229"]$EST_LBS/(Prop.Variola[SPECIES_FK=="220"]$EST_LBS+Prop.Variola[SPECIES_FK=="229"]$EST_LBS) #4.8/12.4
+Prop.Louti   <- round(Prop.Louti,3) #.383
 
 # For all interview records (using CATCH_PK variable) of V. louti or albimarginata for years <= 2015, randomly assign record as "V. louti" proportionally to Prop.Louti (all fish in an interview)
 
@@ -97,14 +102,17 @@ Group.listA <- c("Jacks_110","Groupers_210","Prist_Etelis_240","Emperors_260","I
 # Only keep data after 2016 for species proportions. Grouper species ID prior to 2016 is not reliable
 D <- D[YEAR>=2016]
 
+# Read in rows of new data for update and combine with old data
+d_sub <- read.csv(file.path(root_dir, "Outputs", "SBS_d_sub.csv"))
+Dd <- rbind(D, d_sub)
 # Calculate species proportion for all groups that only contain species
 ResultsA <- list()
 for(i in 1:length(Group.listA)){
   
   aGroup      <- Group.listA[i];   aSPECIES_FK <- as.numeric(str_sub(aGroup,-3,-1)) 
   
-  Total.Sp      <- D[get(aGroup)==1&SPECIES_FK!=aSPECIES_FK,list(EST_LBS=sum(EST_LBS)),by=list(SPECIES_FK,PERIOD)] # Catch by species by year
-  Total.Overall <- D[get(aGroup)==1&SPECIES_FK!=aSPECIES_FK,list(TOTAL=sum(EST_LBS)),by=list(PERIOD)] # Total of identified catch in group
+  Total.Sp      <- Dd[get(aGroup)==1&SPECIES_FK!=aSPECIES_FK,list(EST_LBS=sum(EST_LBS)),by=list(SPECIES_FK,PERIOD)] # Catch by species by year
+  Total.Overall <- Dd[get(aGroup)==1&SPECIES_FK!=aSPECIES_FK,list(TOTAL=sum(EST_LBS)),by=list(PERIOD)] # Total of identified catch in group
   
   # Calculate proportion of each species composing group by PERIOD
   Prop        <- merge(Total.Sp,Total.Overall,by="PERIOD")

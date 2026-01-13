@@ -4,8 +4,9 @@ options(scipen = 999)
 # establish directories using this.path::
 root_dir <- this.path::here(.. = 2)
 
+source(file.path(root_dir, "Scripts", "01_Data scripts", "08_CATCH_SBS_FinalPrep_new.r"))
 # Read in the expanded landings data
-D <- fread(file=paste0(root_dir, "/Data/SPC_AS_SBS.csv"),stringsAsFactors=FALSE) 
+D <- fread(file=paste0(root_dir, "/Data/2023_data/SPC_AS_SBS.csv"),stringsAsFactors=FALSE) 
 R <- data.table(  read.xlsx(paste0(root_dir, "/Data/METADATA.xlsx"),sheet="AREAS")   );  R <- R[DATASET=="SBS"]
 R <- select(R,AREA_ID,AREA_C)
 M <- data.table(  read.xlsx(paste0(root_dir, "/Data/METADATA.xlsx"),sheet="METHODS") );  M <- M[DATASET=="SBS"]
@@ -86,20 +87,24 @@ D.VAR                  <- melt.data.table(D.VAR,id.vars=1:2,variable.name="SPECI
 D            <- merge(D.LBS,D.VAR,by=c("YEAR","AREA_C","SPECIES_FK"))
 D$SPECIES_FK <- as.character(D$SPECIES_FK)
 
+#======================Combine old data with data for update===============================
+d <- read.csv(file.path(root_dir, "Data", "SBS_d_update.csv"))
+Dd <- rbind(D,d)
+
 #======================Break down taxonomic groups into species components using proportion table from 03_BBS_proptables.R===============================
 
 PT            <- readRDS(paste0(root_dir, "/Outputs/SBS_Prop_Table.rds"))  # Species composition of groups, by group x period x region
 PT$GROUP_FK   <- paste0("S",PT$GROUP_FK)
 PT$SPECIES_FK <- paste0("S",PT$SPECIES_FK)
 
-X            <- D[SPECIES_FK=="S109"|SPECIES_FK=="S110"|SPECIES_FK=="S200"|SPECIES_FK=="S210"|SPECIES_FK=="S230"|SPECIES_FK=="S240"|SPECIES_FK=="S260"|SPECIES_FK=="S380"|SPECIES_FK=="S390"]
+X            <- Dd[SPECIES_FK=="S109"|SPECIES_FK=="S110"|SPECIES_FK=="S200"|SPECIES_FK=="S210"|SPECIES_FK=="S230"|SPECIES_FK=="S240"|SPECIES_FK=="S260"|SPECIES_FK=="S380"|SPECIES_FK=="S390"]
 X            <- merge(X,PT,by.x="SPECIES_FK",by.y="GROUP_FK",allow.cartesian=T)
 X$SPECIES_FK <- X$SPECIES_FK.y
 X$EXP_LBS    <- X$EXP_LBS*X$Prop
 X            <- select(X,-SPECIES_FK.y,-Prop)
 X$SOURCE     <- "Group-level"
 
-Y        <- D
+Y        <- Dd
 Y        <- Y[SPECIES_FK!="S109"|SPECIES_FK!="S110"|SPECIES_FK!="S200"|SPECIES_FK!="S210"|SPECIES_FK!="S230"|SPECIES_FK!="S240"|SPECIES_FK!="S260"|SPECIES_FK!="S380"|SPECIES_FK!="S390"]
 Y$SOURCE <- "Species-level"
 
@@ -111,8 +116,8 @@ Z[SPECIES_FK=="S247"|SPECIES_FK=="S239"|SPECIES_FK=="S111"|SPECIES_FK=="S249"|
     SPECIES_FK=="S248"|SPECIES_FK=="S267"|SPECIES_FK=="S231"|SPECIES_FK=="S242"|
     SPECIES_FK=="S241"|SPECIES_FK=="S245"|SPECIES_FK=="S229"]$BMUS <- "T"
 
-D$BMUS <- "F"
-D[SPECIES_FK=="S247"|SPECIES_FK=="S239"|SPECIES_FK=="S111"|SPECIES_FK=="S249"|
+Dd$BMUS <- "F"
+Dd[SPECIES_FK=="S247"|SPECIES_FK=="S239"|SPECIES_FK=="S111"|SPECIES_FK=="S249"|
     SPECIES_FK=="S248"|SPECIES_FK=="S267"|SPECIES_FK=="S231"|SPECIES_FK=="S242"|
     SPECIES_FK=="S241"|SPECIES_FK=="S245"|SPECIES_FK=="S229"]$BMUS <- "T"
 
@@ -134,16 +139,13 @@ ggplot(data=T3)+geom_bar(aes(x=YEAR,y=EXP_LBS),stat="identity",position="stack")
 # Further testing  
 ggplot(data=F)+geom_bar(aes(x=YEAR,y=EXP_LBS),stat="identity")+facet_wrap(~SPECIES_FK)
 
-test  <- D[BMUS=="T",list(LBS_RAW=sum(EXP_LBS)),by=list(YEAR,SPECIES_FK)]
+test  <- Dd[BMUS=="T",list(LBS_RAW=sum(EXP_LBS)),by=list(YEAR,SPECIES_FK)]
 test2 <- select(F,-VAR_EXP_LBS,-SD.LBS)
 test3 <- merge(test,test2,by=c("YEAR","SPECIES_FK"))
 ggplot(data=test3[SPECIES_FK=="S229"])+geom_line(aes(x=YEAR,y=EXP_LBS),col="blue")+geom_line(aes(x=YEAR,y=LBS_RAW),col="red")
 
 # Save BMUS catch to files
 F$SOURCE <- "SBS"
-F        <- select(F,SOURCE,SPECIES_FK,YEAR,AREA_C,LBS=EXP_LBS,SD.LBS)
-
+F        <- select(F,SPECIES_FK,AREA_C,YEAR,LBS=EXP_LBS,SOURCE,SD.LBS)
+          
 saveRDS(F,file=paste0(root_dir,"/Outputs/CATCH_SBS_A.rds"))
-
-
-
