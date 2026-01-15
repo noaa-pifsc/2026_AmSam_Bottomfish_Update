@@ -28,15 +28,23 @@ LH <- select(S,SPECIES,LMAX)
 
 # ===============Boat-based creel survey sizes======================================================================      
 #  STEP 1: read in 4 "flatview" datafiles, followed by some basic data handling
- aint_bbs1 <- fread(paste0(root_dir, "/Data/a_bbs_int_flat1.csv"), header=T, stringsAsFactors=FALSE) 			
- aint_bbs2 <- fread(paste0(root_dir, "/Data/a_bbs_int_flat2.csv"), header=T, stringsAsFactors=FALSE) 			
- aint_bbs3 <- fread(paste0(root_dir, "/Data/a_bbs_int_flat3.csv"), header=T, stringsAsFactors=FALSE) 			
- aint_bbs4 <- fread(paste0(root_dir, "/Data/a_bbs_int_flat4.csv"), header=T, stringsAsFactors=FALSE)
- aint_bbs5 <- fread(paste0(root_dir, "/Data/PICDR-113220 BB Creel Data_all_columns.csv"), header=T, stringsAsFactors=FALSE)
+ aint_bbs1 <- fread(paste0(root_dir, "/Data/2023_data/a_bbs_int_flat1.csv"), header=T, stringsAsFactors=FALSE) 			
+ aint_bbs2 <- fread(paste0(root_dir, "/Data/2023_data/a_bbs_int_flat2.csv"), header=T, stringsAsFactors=FALSE) 			
+ aint_bbs3 <- fread(paste0(root_dir, "/Data/2023_data/a_bbs_int_flat3.csv"), header=T, stringsAsFactors=FALSE) 			
+ aint_bbs4 <- fread(paste0(root_dir, "/Data/2023_data/a_bbs_int_flat4.csv"), header=T, stringsAsFactors=FALSE)
+ aint_bbs5 <- fread(paste0(root_dir, "/Data/2023_data/PICDR-113220 BB Creel Data_all_columns.csv"), header=T, stringsAsFactors=FALSE)
+ aint_bbs6 <- data.table(readr::read_rds(fs::path(root_dir,"Data","a_interview_bbs.rds")))
  aint_bbs5 <- aint_bbs5[,-62]       # drop var 62 ('COMMON_NAME') which is duplicated		
  aint_bbs4 <- aint_bbs4[year(SAMPLE_DATE) < 2021] # aint_bbs4 had some 2021 record (duplicated with aint_bbs5)								
+ 
+ aint_bbs6$LEN_MM <- aint_bbs6$LEN_CM #comparing rows, it looks like data is on same scale, but one is missnamed. Just changing name to LEN_MM to be consistent with old data (not actually converting from cm to mm).
+ aint_bbs6$LEN_MM_TYPE <- aint_bbs6$LEN_CM_TYPE
+ 
  BB        <- rbind.data.frame(aint_bbs1, aint_bbs2, aint_bbs3, aint_bbs4, aint_bbs5) # rbind coerce variable formats in the dfs to match		
-
+ BB$PRICE_LB_TYPE_FK <- NULL
+ BB$PRICE_LB_TYPE <- NULL
+ aint_bbs6 <- aint_bbs6 %>% filter(SAMPLE_DATE >= "2022-01-01") %>% select(colnames(BB))
+ BB <- rbind(BB, aint_bbs6)
  BB            <- BB[!is.na(LEN_MM)&!(is.na(SIZ_LBS)|SIZ_LBS=="NULL")]
  BB$YEAR       <- year(BB$SAMPLE_DATE)
  BB$LEN_MM     <- as.numeric(BB$LEN_MM)
