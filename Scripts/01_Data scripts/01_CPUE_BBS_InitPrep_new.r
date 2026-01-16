@@ -1,3 +1,5 @@
+## This script is not used, use 01_CPUE_BBS_InitPrep.R
+
 root_dir <- this.path::here(.. = 2) # establish directories using this.path
 A_new <- readr::read_rds(fs::path(root_dir,"Data","a_interview_bbs.rds"))
 load(file.path(root_dir, "Data", "pfl_pk.RDS"))

@@ -196,7 +196,7 @@ Build_All_SS <- function(species,
                              pattern = species,
                              full.names = TRUE)
     if(Nfleets == 1){
-      cpue_files <- cpue_files[str_detect(cpue_files, "2016_2021")]
+      cpue_files <- cpue_files[str_detect(cpue_files, "2016_2024")]
     }
     cpue.list <- lapply(cpue_files, function(i){read.csv(i)})
     time.period <- unlist(str_extract_all(cpue_files, 
