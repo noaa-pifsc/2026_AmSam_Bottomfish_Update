@@ -31,6 +31,7 @@ source(paste0(here(..=1),"/Scripts/01_Data scripts/03a_CPUE_BBS_Wind.r"));      
 source(paste0(here(..=1),"/Scripts/01_Data scripts/03b_CPUE_BBS_PCA.r"));       rm(list=ls()) 
 source(paste0(here(..=1),"/Scripts/01_Data scripts/04_CPUE_BBS_FinalPrep.r"));  rm(list=ls())
 source(paste0(here(..=1),"/Scripts/01_Data scripts/06_CATCH_BBS_FinalPrep.r")); rm(list=ls()) 
+source(paste0(here(..=1),"/Scripts/01_Data scripts/06_CATCH_BBS_FinalPrep_new.r")); rm(list=ls()) 
 set.seed(123); source(paste0(here(..=1),"/Scripts/01_Data scripts/07_CATCH_SBS_PropTable.r")); rm(list=ls()) 
 source(paste0(here(..=1),"/Scripts/01_Data scripts/08_CATCH_SBS_FinalPrep.r")); rm(list=ls())
 source(paste0(here(..=1),"/Scripts/01_Data scripts/09_CATCH_Final.r"));         rm(list=ls())
@@ -54,10 +55,8 @@ Area.List    <- c("Tutuila","Manua")
 
 # Run CPUE standardization for all species, areas combined in a loop
 for(i in 1:length(Species.List)){
-    Standardize_CPUE2(Sp=Species.List[i],Interaction=T,minYr=2016,maxYr=2021) #TODO: once I get new data change maxYr to latest year
+    Standardize_CPUE2(Sp=Species.List[i],Interaction=T,minYr=2016,maxYr=2024) 
 }
-#TODO: ETCO 2021 CPUE value is off from benchmark (benchmark - 2.665 (0.21), now - 2.919 (1.18))
-# NOTE: I think it might have been a typo when combining all of the index values. It looks like values from LERU 2016-2021 all got shifted up one row in table 7-8 of assessment report.
 
 
 # Or run a single model

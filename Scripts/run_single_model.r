@@ -1,14 +1,18 @@
+library(r4ss)
 
+root_dir <- this.path::here(.. = 1)
 source(file.path(root_dir,"Scripts","02_SS scripts","01_Build_All_SS.R"))
 
-scenario <- "003_new_cpue_2"
-Build_All_SS(species = "PRFL",
+
+
+scenario <- "003_new_data_all"
+Build_All_SS(species = "CALU",
     scenario = "base", 
     startyr = 1967,
-    endyr = 2021,
+    endyr = 2024,
     fleets = 1, 
-    M_option = "OMalley_Then",
-    GROWTH_option = "OMalley",
+    M_option = "Fry_Then",
+    GROWTH_option = "SW_BBS_BIOS",
     LW_option = "Kamikawa",
     MAT_option = "SW_BBS_BIOS",
     SR_option = "FishLife",
@@ -17,7 +21,7 @@ Build_All_SS(species = "PRFL",
     lambdas = F,
     includeCPUE = TRUE,
     superyear = TRUE,
-    superyear_blocks = list(c(2011,2012),c(2018,2020)),
+    superyear_blocks = list(c(2009,2011),c(2016,2017),c(2018,2020)),
     N_samp = 45,
     init_values = 0, 
     parmtrace = 0,
@@ -54,14 +58,12 @@ Build_All_SS(species = "PRFL",
     r4ssplots = TRUE,
     readGoogle = TRUE
 )
-library(r4ss)
 
 mods <- SSgetoutput(
-    dirvec = c(file.path(root_dir, "SS3 models", Species.List, "002_new_cpue"), 
-                file.path(root_dir, "SS3 models", Species.List, "01_Base"))) 
-mods_sum <- SSsummarize(list(mods[[9]], mods[[18]]))
-SSplotComparisons(mods_sum, legendlabels = c("new", "old"), print = T,
-plotdir = file.path(root_dir, "SS3 models", Species.List[9], "002_new_cpue"))
+    dirvec = c(file.path(root_dir, "SS3 models", "CALU", "003_new_data_all"), 
+                file.path(root_dir, "SS3 models", "CALU", "01_Base"))) 
+mods_sum <- SSsummarize(mods)
+SSplotComparisons(mods_sum, legendlabels = c("new", "old"))
 
 
 mods <- SSgetoutput(
