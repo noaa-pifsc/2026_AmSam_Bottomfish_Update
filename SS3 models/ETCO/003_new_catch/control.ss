@@ -50,20 +50,28 @@
 #
 #_growth_parms
 #_LO	HI	INIT	PRIOR	PR_SD	PR_type	PHASE	env_var&link	dev_link	dev_minyr	dev_maxyr	dev_PH	Block	Block_Fxn
-       0	      2	0.192857	  0	  0	0	 -3	0	0	0	0	0	0	0	#_NatM_p_1_Fem_GP_1        
-       0	     25	       1	  0	  0	0	 -4	0	0	0	0	0	0	0	#_L_at_Amin_Fem_GP_1       
-      30	    100	    41.2	  0	  0	0	 -4	0	0	0	0	0	0	0	#_L_at_Amax_Fem_GP_1       
-    0.05	    0.6	    0.47	  0	  0	0	 -3	0	0	0	0	0	0	0	#_VonBert_K_Fem_GP_1       
-    0.05	   0.25	    0.11	  0	  0	0	 -3	0	0	0	0	0	0	0	#_CV_young_Fem_GP_1        
-    0.05	   0.25	    0.11	  0	  0	0	 -3	0	0	0	0	0	0	0	#_CV_old_Fem_GP_1          
-      -1	      3	0.000021	  0	  0	0	 -3	0	0	0	0	0	0	0	#_Wtlen_1_Fem_GP_1         
-      -1	      4	    2.95	  0	  0	0	 -3	0	0	0	0	0	0	0	#_Wtlen_2_Fem_GP_1         
-      25	     60	    27.2	  0	  0	0	 -3	0	0	0	0	0	0	0	#_Mat50%_Fem_GP_1          
-      -3	      3	   -0.98	  0	  0	0	 -3	0	0	0	0	0	0	0	#_Mat_slope_Fem_GP_1       
-      -3	      3	       1	  0	  0	0	 -3	0	0	0	0	0	0	0	#_Eggs/kg_inter_Fem_GP_1   
-      -3	      3	       0	  0	  0	0	 -3	0	0	0	0	0	0	0	#_Eggs/kg_slope_wt_Fem_GP_1
-     0.1	     10	       1	  1	  1	0	 -1	0	0	0	0	0	0	0	#_CohortGrowDev            
-0.000001	0.99999	     0.5	0.5	0.5	0	-99	0	0	0	0	0	0	0	#_FracFemale_GP_1          
+    0	      2	0.0981818	  0	  0	0	 -3	0	0	0	0	0	0	0	#_NatM_p_1_Fem_GP_1        
+    5	     60	     12.7	  0	  0	0	 -4	0	0	0	0	0	0	0	#_L_at_Amin_Fem_GP_1       
+   50	    100	     89.9	  0	  0	0	 -4	0	0	0	0	0	0	0	#_L_at_Amax_Fem_GP_1       
+ 0.05	   0.25	    0.105	  0	  0	0	 -3	0	0	0	0	0	0	0	#_VonBert_K_Fem_GP_1       
+ 0.05	   0.25	     0.07	  0	  0	0	 -3	0	0	0	0	0	0	0	#_CV_young_Fem_GP_1        
+ 0.05	   0.25	     0.07	  0	  0	0	 -3	0	0	0	0	0	0	0	#_CV_old_Fem_GP_1          
+   -1	      3	 4.25e-05	  0	  0	0	 -3	0	0	0	0	0	0	0	#_Wtlen_1_Fem_GP_1         
+   -1	      4	     2.75	  0	  0	0	 -3	0	0	0	0	0	0	0	#_Wtlen_2_Fem_GP_1         
+   40	     75	     62.2	  0	  0	0	 -3	0	0	0	0	0	0	0	#_Mat50%_Fem_GP_1          
+   -3	      3	    -0.16	  0	  0	0	 -3	0	0	0	0	0	0	0	#_Mat_slope_Fem_GP_1       
+   -3	      3	        1	  0	  0	0	 -3	0	0	0	0	0	0	0	#_Eggs/kg_inter_Fem_GP_1   
+   -3	      3	        0	  0	  0	0	 -3	0	0	0	0	0	0	0	#_Eggs/kg_slope_wt_Fem_GP_1
+    0	      2	0.0981818	  0	  0	0	 -3	0	0	0	0	0	0	0	#_NatM_p_1_Male_GP_1       
+    5	     60	     14.1	  0	  0	0	 -4	0	0	0	0	0	0	0	#_L_at_Amin_Male_GP_1      
+   50	    100	       84	  0	  0	0	 -4	0	0	0	0	0	0	0	#_L_at_Amax_Male_GP_1      
+ 0.05	   0.25	    0.116	  0	  0	0	 -3	0	0	0	0	0	0	0	#_VonBert_K_Male_GP_1      
+ 0.05	   0.25	     0.07	  0	  0	0	 -3	0	0	0	0	0	0	0	#_CV_young_Male_GP_1       
+ 0.05	   0.25	     0.07	  0	  0	0	 -3	0	0	0	0	0	0	0	#_CV_old_Male_GP_1         
+   -1	      3	 4.25e-05	  0	  0	0	 -3	0	0	0	0	0	0	0	#_Wtlen_1_Male_GP_1        
+   -1	      4	     2.75	  0	  0	0	 -3	0	0	0	0	0	0	0	#_Wtlen_2_Male_GP_1        
+  0.1	     10	        1	  1	  1	0	 -1	0	0	0	0	0	0	0	#_CohortGrowDev            
+1e-06	0.99999	      0.5	0.5	0.5	0	-99	0	0	0	0	0	0	0	#_FracFemale_GP_1          
 #_no timevary MG parameters
 #
 #_seasonal_effects_on_biology_parms
@@ -75,11 +83,11 @@
 0 # 0/1 to use steepness in initial equ recruitment calculation
 0 # future feature: 0/1 to make realized sigmaR a function of SR curvature
 #_LO	HI	INIT	PRIOR	PR_SD	PR_type	PHASE	env-var	use_dev	dev_mnyr	dev_mxyr	dev_PH	Block	Blk_Fxn # parm_name
-0.1	5	       1	0	0	0	  1	0	0	0	0	0	0	0	#_SR_LN(R0)  
-0.2	1	0.746822	0	0	0	 -2	0	0	0	0	0	0	0	#_SR_BH_steep
-  0	2	 0.59066	0	0	0	 -4	0	0	0	0	0	0	0	#_SR_sigmaR  
- -5	5	       0	0	0	0	 -4	0	0	0	0	0	0	0	#_SR_regime  
-  0	0	       0	0	0	0	-99	0	0	0	0	0	0	0	#_SR_autocorr
+0.01	4	       1	0	0	0	  1	0	0	0	0	0	0	0	#_SR_LN(R0)  
+ 0.2	1	0.637214	0	0	0	 -2	0	0	0	0	0	0	0	#_SR_BH_steep
+   0	2	0.518434	0	0	0	 -4	0	0	0	0	0	0	0	#_SR_sigmaR  
+  -5	5	       0	0	0	0	 -4	0	0	0	0	0	0	0	#_SR_regime  
+   0	0	       0	0	0	0	-99	0	0	0	0	0	0	0	#_SR_autocorr
 #_no timevary SR parameters
 0 #do_recdev:  0=none; 1=devvector (R=F(SSB)+dev); 2=deviations (R=F(SSB)+dev); 3=deviations (R=R0*dev; dev2=R-f(SSB)); 4=like 3 with sum(dev2) adding penalty
 1971 # first year of main recr_devs; early devs can preceed this era
@@ -120,7 +128,7 @@
 -9999	0	0	0	0	0	#_terminator
 #_Q_parms(if_any);Qunits_are_ln(q)
 #_LO	HI	INIT	PRIOR	PR_SD	PR_type	PHASE	env-var	use_dev	dev_mnyr	dev_mxyr	dev_PH	Block	Blk_Fxn  #  parm_name
--4	2	-2	0	0	0	 1	0	0	0	0	0	0	0	#_LnQ_base        
+-5	3	-2	0	0	0	 1	0	0	0	0	0	0	0	#_LnQ_base        
  0	2	 0	0	0	0	-1	0	0	0	0	0	0	0	#_LnQ_base_extraSE
 #_no timevary Q parameters
 #
@@ -134,12 +142,12 @@
 #
 #_SizeSelex
 #_LO	HI	INIT	PRIOR	PR_SD	PR_type	PHASE	env-var	use_dev	dev_mnyr	dev_mxyr	dev_PH	Block	Blk_Fxn  #  parm_name
- 20	32	25	  50	0	0	2	0	0	0	0	0	0	0	#_1
-0.1	12	 3	-1.7	0	0	2	0	0	0	0	0	0	0	#_2
+15	100	50	  50	0	0	2	0	0	0	0	0	0	0	#_1
+ 0	 70	30	-1.7	0	0	2	0	0	0	0	0	0	0	#_2
 #_AgeSelex
 #_No age_selex_parm
 #_Dirichlet parameters
--5	10	1	0	1.816	6	2	0	0	0	0	0	0	0	#_Dirichlet_Theta
+-5	10	0	0	1.816	6	2	0	0	0	0	0	0	0	#_Dirichlet_Theta
 #_no timevary selex parameters
 #
 0 #  use 2D_AR1 selectivity(0/1):  experimental feature

@@ -5,23 +5,23 @@ source(file.path(root_dir,"Scripts","02_SS scripts","01_Build_All_SS.R"))
 
 
 
-scenario <- "003_new_data_all"
-Build_All_SS(species = "CALU",
+scenario <- "003_new_catch"
+Build_All_SS(species = "PRZO",
     scenario = "base", 
     startyr = 1967,
     endyr = 2024,
     fleets = 1, 
-    M_option = "Fry_Then",
-    GROWTH_option = "SW_BBS_BIOS",
+    M_option = "Schemmel_Then",
+    GROWTH_option = "Schemmel_Sex",
     LW_option = "Kamikawa",
-    MAT_option = "SW_BBS_BIOS",
+    MAT_option = "Schemmel",
     SR_option = "FishLife",
     EST_option = "Normal",
     initF = FALSE,
     lambdas = F,
     includeCPUE = TRUE,
     superyear = TRUE,
-    superyear_blocks = list(c(2009,2011),c(2016,2017),c(2018,2020)),
+    superyear_blocks = list(c(2009,2011),c(2012,2014),c(2015,2016)),
     N_samp = 45,
     init_values = 0, 
     parmtrace = 0,
@@ -60,10 +60,11 @@ Build_All_SS(species = "CALU",
 )
 
 mods <- SSgetoutput(
-    dirvec = c(file.path(root_dir, "SS3 models", "CALU", "003_new_data_all"), 
-                file.path(root_dir, "SS3 models", "CALU", "01_Base"))) 
+    dirvec = c(file.path(root_dir, "SS3 models", "PRFL", "003_new_catch"), 
+                file.path(root_dir, "SS3 models", "PRFL", "01_Base"))) 
 mods_sum <- SSsummarize(mods)
-SSplotComparisons(mods_sum, legendlabels = c("new", "old"))
+SSplotComparisons(mods_sum, legendlabels = c("new", "old"))#, 
+print = TRUE, plotdir = file.path(root_dir, "SS3 models", "PRZO", "003_new_catch"))
 
 
 mods <- SSgetoutput(

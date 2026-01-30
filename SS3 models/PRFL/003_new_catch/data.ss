@@ -2,7 +2,7 @@
 #C data file for PRFL
 #
 1967 #_styr
-2021 #_endyr
+2024 #_endyr
 1 #_nseas
 12 #_months_per_seas
 2 #_Nsubseasons
@@ -72,6 +72,9 @@
  2019	1	1	  0.11476	0.378188	#_54        
  2020	1	1	   0.0753	0.407456	#_55        
  2021	1	1	0.0113852	  0.3993	#_56        
+ 2022	1	1	  0.01814	     0.5	#_57        
+ 2023	1	1	  0.07575	0.495937	#_58        
+ 2024	1	1	  0.42638	 0.38829	#_59        
 -9999	0	0	        0	       0	#_terminator
 #_CPUE_and_surveyabundance_observations
 #_Units:  0=numbers; 1=biomass; 2=F; >=30 for special types
@@ -82,11 +85,11 @@
 #
 #_CPUE_data
 #_year	seas	index	obs	se_log
- 2016	7	1	 1.01178	0.526646	#_1         
- 2017	7	1	0.604942	0.509746	#_2         
- 2018	7	1	 1.37327	0.369589	#_3         
- 2019	7	1	0.840503	0.455061	#_4         
- 2020	7	1	0.808892	0.489882	#_5         
+ 2016	7	1	 1.41011	0.432958	#_1         
+ 2017	7	1	0.490532	0.450902	#_2         
+ 2018	7	1	 1.27304	0.320396	#_3         
+ 2019	7	1	0.697095	0.407751	#_4         
+ 2020	7	1	0.907046	 0.45313	#_5         
 -9999	0	0	       0	       0	#_terminator
 0 #_N_discard_fleets
 #_discard_units (1=same_as_catchunits(bio/num); 2=fraction; 3=numbers)
