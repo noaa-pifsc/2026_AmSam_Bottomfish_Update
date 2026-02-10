@@ -2,7 +2,7 @@
 #C data file for PRZO
 #
 1967 #_styr
-2021 #_endyr
+2024 #_endyr
 1 #_nseas
 12 #_months_per_seas
 2 #_Nsubseasons
@@ -72,6 +72,9 @@
  2019	1	1	  0.07167	0.273842	#_54        
  2020	1	1	  0.05035	   0.418	#_55        
  2021	1	1	0.0063775	0.453778	#_56        
+ 2022	1	1	   0.0427	    0.38	#_57        
+ 2023	1	1	  0.01225	0.463714	#_58        
+ 2024	1	1	  0.05579	0.458732	#_59        
 -9999	0	0	        0	       0	#_terminator
 #_CPUE_and_surveyabundance_observations
 #_Units:  0=numbers; 1=biomass; 2=F; >=30 for special types

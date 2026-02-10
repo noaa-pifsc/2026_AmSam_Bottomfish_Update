@@ -74,8 +74,7 @@
  2021	1	1	 0.15558	     0.5	#_56        
  2022	1	1	 0.01179	     0.5	#_57        
  2023	1	1	   0.267	    0.45	#_58        
- 2023	1	1	   0.267	    0.45	#_59        
- 2024	1	1	 1.04099	0.362411	#_60        
+ 2024	1	1	 1.04099	0.362411	#_59        
 -9999	0	0	       0	       0	#_terminator
 #_CPUE_and_surveyabundance_observations
 #_Units:  0=numbers; 1=biomass; 2=F; >=30 for special types
