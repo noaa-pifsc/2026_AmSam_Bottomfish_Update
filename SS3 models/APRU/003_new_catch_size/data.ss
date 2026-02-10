@@ -2,7 +2,7 @@
 #C data file for APRU
 #
 1967 #_styr
-2021 #_endyr
+2024 #_endyr
 1 #_nseas
 12 #_months_per_seas
 2 #_Nsubseasons
@@ -72,6 +72,9 @@
  2019	1	1	 1.24375	 0.34192	#_54        
  2020	1	1	 0.23904	0.394157	#_55        
  2021	1	1	 0.03357	0.452443	#_56        
+ 2022	1	1	 0.05851	     0.5	#_57        
+ 2023	1	1	 0.15377	     0.5	#_58        
+ 2024	1	1	 0.53161	0.404268	#_59        
 -9999	0	0	       0	       0	#_terminator
 #_CPUE_and_surveyabundance_observations
 #_Units:  0=numbers; 1=biomass; 2=F; >=30 for special types

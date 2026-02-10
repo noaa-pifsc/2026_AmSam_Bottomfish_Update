@@ -62,6 +62,14 @@
    -3	      3	  -0.87	  0	  0	0	 -3	0	0	0	0	0	0	0	#_Mat_slope_Fem_GP_1       
    -3	      3	      1	  0	  0	0	 -3	0	0	0	0	0	0	0	#_Eggs/kg_inter_Fem_GP_1   
    -3	      3	      0	  0	  0	0	 -3	0	0	0	0	0	0	0	#_Eggs/kg_slope_wt_Fem_GP_1
+    0	      2	   0.18	  0	  0	0	 -3	0	0	0	0	0	0	0	#_NatM_p_1_Male_GP_1       
+    0	     20	   13.8	  0	  0	0	 -3	0	0	0	0	0	0	0	#_L_at_Amin_Male_GP_6      
+    0	    100	   38.3	  0	  0	0	 -3	0	0	0	0	0	0	0	#_L_at_Amax_Male_GP_6      
+    0	      1	   0.29	  0	  0	0	 -3	0	0	0	0	0	0	0	#_VonBert_K_Male_GP_6      
+    0	      1	   0.08	  0	  0	0	 -3	0	0	0	0	0	0	0	#_CV_young_Male_GP_6       
+    0	      1	   0.08	  0	  0	0	 -3	0	0	0	0	0	0	0	#_CV_old_Male_GP_6         
+   -1	      3	1.8e-05	  0	  0	0	 -3	0	0	0	0	0	0	0	#_Wtlen_1_Male_GP_1        
+   -1	      4	   3.04	  0	  0	0	 -3	0	0	0	0	0	0	0	#_Wtlen_2_Male_GP_1        
   0.1	     10	      1	  1	  1	0	 -1	0	0	0	0	0	0	0	#_CohortGrowDev            
 1e-06	0.99999	    0.5	0.5	0.5	0	-99	0	0	0	0	0	0	0	#_FracFemale_GP_1          
 #_no timevary MG parameters
