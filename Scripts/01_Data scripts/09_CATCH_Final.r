@@ -92,6 +92,27 @@ if(!exists(paste0(root_dir,"/Outputs/SS3_Inputs"))){
   dir.create(paste0(root_dir,"/Outputs/SS3_Inputs"),recursive=T,showWarnings=F)
 }
 
+## Added by Meg to fill in years of missing catch for update - used the mean of the previous 3 years
+## didn't do the expansion thing Toby did bc Toby was not around and it is more complicated
+Z %>% filter(YEAR %in% c(2020, 2021, 2022)) %>% 
+filter(SPECIES == "ETCO") %>% 
+summarise(mean_C = mean(MT), mean_sd = mean(LOGSD.MT))
+
+Z %>% filter(YEAR %in% c(2019, 2020, 2021)) %>% 
+filter(SPECIES == "PRZO") %>% 
+summarise(mean_C = mean(MT), mean_sd = mean(LOGSD.MT))
+
+# filling in missing years with mean of the last 3 years before missing year catch 
+# bc the mean seemed more representative of catches before and after vs just the 
+# previous year before.
+missing_catches <- data.frame(YEAR = c(2023, 2022), 
+SPECIES = c("ETCO", "PRZO"), 
+MT = c(0.267,0.0427), #values hard coded from lines above
+LOGSD.MT = c(0.45,0.38)) #values hard coded from lines above
+
+Z <- Z %>% bind_rows(missing_catches) %>% 
+arrange(SPECIES, YEAR)
+
 write.csv(Z,paste0(root_dir,"/Outputs/SS3_Inputs/CATCH_Final.csv"),row.names=FALSE)
 
 

@@ -269,6 +269,9 @@ for(i in 1:length(Species.List)){
  SizeData <- SizeData[AREA_C!="Atoll"&DATASET!="UVS"]
  SizeData <- SizeData %>% group_by(SPECIES,DATASET,YEAR,EFFN,LENGTH_BIN_START) %>% summarize(N=sum(N))
  
+ # Remove last year of PRZO size data for update - added by Meg
+ SizeData <- SizeData %>% filter(!(SPECIES == "PRZO" & YEAR > 2021))
+
  write.csv(SizeData,paste0(root_dir,"/Outputs/SS3_Inputs/SIZE_Final.csv"),row.names=F)
  
 # Output a sample size summary (includes YEARs with < MinN)
