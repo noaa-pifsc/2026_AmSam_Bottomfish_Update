@@ -19,7 +19,7 @@
 #  --------------------------------------------------------------------------------------------------------------
 #  STEP 1: read in 4 "flatview" datafiles, followed by some basic data handling
 
-   #A <- read_rds(fs::path(root_dir,"Data","a_interview_bbs.rds"))
+  #Data pulled for 2023 Benchmark assessment 
    aint_bbs1 <- fread(paste0(root_dir, "/Data/2023_data/a_bbs_int_flat1.csv"), header=T,  stringsAsFactors=FALSE) 			
    aint_bbs2 <- fread(paste0(root_dir, "/Data/2023_data/a_bbs_int_flat2.csv"), header=T, stringsAsFactors=FALSE) 			
    aint_bbs3 <- fread(paste0(root_dir, "/Data/2023_data/a_bbs_int_flat3.csv"), header=T, stringsAsFactors=FALSE) 			

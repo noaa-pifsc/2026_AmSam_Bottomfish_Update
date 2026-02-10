@@ -32,7 +32,7 @@ Run_Diags <- function(root_dir = NA,
     
     ## Do Retrospectives
     r4ss::retro(dir=file.path(root_dir, "SS3 models", species, file_dir), 
-               oldsubdir="", newsubdir="Retrospectives", years=retro_years, exe = "ss_opt_win")
+               oldsubdir="", newsubdir="Retrospectives", years=retro_years, exe = "ss")
     
     
   }

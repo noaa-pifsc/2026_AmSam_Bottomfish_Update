@@ -261,9 +261,10 @@ Results$KEEP <- ifelse(Results$PVALUE<=0.05,1,0)
 
 # Add 2009-2021 Manua catch based on regression results above.
 COEF <- select(Results[KEEP==1],SPECIES_FK,COEF)
-#stop here and rbind with new e dataframe 
-E    <- merge(E,COEF,by="SPECIES_FK")
+saveRDS(COEF, file = file.path(root_dir, "/Outputs/CATCH_BBS_COEF_Manua.rds"))
 saveRDS(E, file = file.path(root_dir, "/Outputs/CATCH_BBS_E_Old.rds"))
+#stop here and rbind with new e dataframe 
+#E    <- merge(E,COEF,by="SPECIES_FK")
 
 #Do the remainder of this in 06_CATCH_BBS_FinalPrep_new.r
 # Calculate 2009-2021 Manua catch based on Tutuila catch

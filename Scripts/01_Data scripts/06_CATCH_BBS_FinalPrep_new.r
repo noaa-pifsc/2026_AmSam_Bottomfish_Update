@@ -149,6 +149,7 @@ d <- d[,list(LBS_CAUGHT=sum(LBS_CAUGHT),VAR_LBS_CAUGHT=sum(VAR_LBS_CAUGHT)),by=l
 # Remove the zero catch strata
 # d <- d[LBS_CAUGHT>0]
 
+## Do we even need to do this section since we aren't including LERU in 2026 update??
 #===============Fix L. rubrioperculatus (267) in the Manuas I. issue (fisher say it's common, barely recorded, lots of unidentified emperors)===============
 d <- merge(d,S,by.x="SPECIES_FK",by.y="SPECIES_PK") # Add family info so we can select all Emperors quickly
 
@@ -164,14 +165,14 @@ Prop.Rubrio <- 0.32; Prop.OtherEmps <- 1-Prop.Rubrio
 # For the catch
 d.LBS                             <- dcast(d,YEAR+ZONE+METHOD~SPECIES_FK,value.var="LBS_CAUGHT",fill=0)
 d.LBS[ZONE=="Manua"]$S267 <- d.LBS[ZONE=="Manua"]$S99999*Prop.Rubrio    # Assign Prop.Rubrio proportion to LERU catch
-d.LBS[ZONE=="Manua"]$S260 <- d.LBS[ZONE=="Manua"]$S99999*Prop.OtherEmps # Assign Prop.OtherEmps proportion to other emperor catch
+#d.LBS[ZONE=="Manua"]$S260 <- d.LBS[ZONE=="Manua"]$S99999*Prop.OtherEmps # Assign Prop.OtherEmps proportion to other emperor catch
 d.LBS                             <- select(d.LBS,-S99999) # Get rid of Variolas column
 d.LBS                             <- melt.data.table(d.LBS,id.vars=1:3,variable.name="SPECIES_FK",value.name="LBS_CAUGHT")
 
 # For the variance
 d.VAR                             <- dcast(d,YEAR+ZONE+METHOD~SPECIES_FK,value.var="VAR_LBS_CAUGHT",fill=0)
 d.VAR[ZONE=="Manua"]$S267 <- d.VAR[ZONE=="Manua"]$S99999*Prop.Rubrio    # Assign Prop.Rubrio proportion to LERU catch
-d.VAR[ZONE=="Manua"]$S260 <- d.VAR[ZONE=="Manua"]$S99999*Prop.OtherEmps # Assign Prop.OtherEmps proportion to other emperor catch
+#d.VAR[ZONE=="Manua"]$S260 <- d.VAR[ZONE=="Manua"]$S99999*Prop.OtherEmps # Assign Prop.OtherEmps proportion to other emperor catch
 d.VAR                             <- select(d.VAR,-S99999) # Get rid of Variolas column
 d.VAR                             <- melt.data.table(d.VAR,id.vars=1:3,variable.name="SPECIES_FK",value.name="VAR_LBS_CAUGHT")
 
@@ -196,12 +197,13 @@ d[YEAR>2015&YEAR<=2025]$PERIOD  <- 2025
 
 X            <- d[SPECIES_FK=="S109"|SPECIES_FK=="S110"|SPECIES_FK=="S200"|SPECIES_FK=="S210"|SPECIES_FK=="S230"|SPECIES_FK=="S240"|SPECIES_FK=="S260"|SPECIES_FK=="S380"|SPECIES_FK=="S390"]
 
+## There is only one record of a taxonomic group
 ggplot(data=X[ZONE=="Tutuila"],aes(x=YEAR,y=LBS_CAUGHT))+
   geom_bar(stat="identity")+
   facet_wrap(~SPECIES_FK,scales="free_y")
 ggsave(last_plot(),file=paste0(root_dir, "/Outputs/Summary/CATCH_GROUPED.png"),width=8,height=4)
 
-X            <- merge(X,PT,by.x=c("SPECIES_FK","PERIOD","ZONE"),by.y=c("GROUP_FK","PERIOD","AREA_C"),allow.cartesian=T)
+X          <- merge(X,PT,by.x=c("SPECIES_FK","PERIOD","ZONE"),by.y=c("GROUP_FK","PERIOD","AREA_C"),allow.cartesian=T)
 X$SPECIES_FK <- X$SPECIES_FK.y
 X$LBS_CAUGHT <- X$LBS_CAUGHT*X$Prop
 X            <- select(X,-SPECIES_FK.y,-Prop,-PERIOD)
@@ -274,28 +276,29 @@ ggplot(data=Tt)+geom_bar(aes(x=YEAR,y=LBS),stat="identity")
 
 e <- dcast(g,SPECIES_FK+YEAR~ZONE,value.var="LBS_CAUGHT")
 
-ggplot(data=E[YEAR>=1987&YEAR<=2008],aes(x=Tutuila,y=Manua))+geom_point()+stat_smooth(method="lm")+facet_wrap(~SPECIES_FK,scales="free")
-ggplot(data=E[YEAR>=1987&YEAR<=2008],aes(x=Tutuila,y=Manua))+geom_point()+stat_smooth()+facet_wrap(~SPECIES_FK,scales="free")
+# ggplot(data=e[YEAR>=1987&YEAR<=2008],aes(x=Tutuila,y=Manua))+geom_point()+stat_smooth(method="lm")+facet_wrap(~SPECIES_FK,scales="free")
+# ggplot(data=e[YEAR>=1987&YEAR<=2008],aes(x=Tutuila,y=Manua))+geom_point()+stat_smooth()+facet_wrap(~SPECIES_FK,scales="free")
 
-Sp.list <- unique(E$SPECIES_FK)
-Results <- data.table();aResults<-data.table()
-for(i in 1:11){
+# Sp.list <- unique(E$SPECIES_FK)
+# Results <- data.table();aResults<-data.table()
+# for(i in 1:11){
   
-  anLM                <- lm(data=E[SPECIES_FK==Sp.list[i]&(YEAR>=1987&YEAR<=2008)],Manua~Tutuila+0)
-  aResults$SPECIES_FK <- Sp.list[i]
-  aResults$PVALUE     <- round(summary(anLM)$coefficients[4],3)
-  aResults$R2         <- round(summary(anLM)$r.squared,3)
-  aResults$COEF       <- anLM$coefficients[1]
-  Results             <- rbind(Results,aResults)
-}
+#   anLM                <- lm(data=E[SPECIES_FK==Sp.list[i]&(YEAR>=1987&YEAR<=2008)],Manua~Tutuila+0)
+#   aResults$SPECIES_FK <- Sp.list[i]
+#   aResults$PVALUE     <- round(summary(anLM)$coefficients[4],3)
+#   aResults$R2         <- round(summary(anLM)$r.squared,3)
+#   aResults$COEF       <- anLM$coefficients[1]
+#   Results             <- rbind(Results,aResults)
+# }
 
-Results$KEEP <- ifelse(Results$PVALUE<=0.05,1,0)
+# Results$KEEP <- ifelse(Results$PVALUE<=0.05,1,0)
 
 # Add 2009-2021 Manua catch based on regression results above.
-COEF <- select(Results[KEEP==1],SPECIES_FK,COEF)
-e    <- merge(e,COEF,by="SPECIES_FK")
-E <- readRDS(file = file.path(root_dir, "/Outputs/CATCH_BBS_E_Old.rds"))
+# COEF <- select(Results[KEEP==1],SPECIES_FK,COEF)
+E <- readRDS(file = file.path(root_dir, "Outputs/CATCH_BBS_E_Old.rds"))
+COEF <- readRDS(file = file.path(root_dir, "Outputs/CATCH_BBS_COEF_Manua.rds"))
 Ee <- rbind(E, e)
+Ee    <- merge(Ee,COEF,by="SPECIES_FK")
 
 # Calculate 2009-2021 Manua catch based on Tutuila catch
 Ee[YEAR>=2009]$Manua <- Ee[YEAR>=2009]$Tutuila*Ee[YEAR>=2009]$COEF
