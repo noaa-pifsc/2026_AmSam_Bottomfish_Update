@@ -61,8 +61,8 @@ Create_Boot_Tables <- function(root_dir,model_dir){
   
   TA <- TA %>% select(-TOT_BIO)
   
-  TA1 <- TA %>% filter(YEAR>=1969&YEAR<=1996)
-  TA2 <- TA %>% filter(YEAR>1996) #%>% rbind(NA)
+  TA1 <- TA %>% filter(YEAR>=1969&YEAR<=1997)
+  TA2 <- TA %>% filter(YEAR>1997) %>% rbind(NA)
   TA.Final <- cbind(TA1,TA2)
   
 
