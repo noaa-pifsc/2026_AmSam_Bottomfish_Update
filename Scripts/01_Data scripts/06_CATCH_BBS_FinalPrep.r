@@ -150,7 +150,7 @@ D$SPECIES_FK <- as.character(D$SPECIES_FK)
 
 #======================Break down taxonomic groups into species components using proportion table from 03_BBS_proptables.R===============================
 
-PT            <- readRDS(paste0(root_dir, "/Outputs/2023_outputs/BBS_Prop_Table.rds"))  # Species composition of groups, by group x period x region
+PT            <- readRDS(paste0(root_dir, "/Data/2023_outputs/BBS_Prop_Table.rds"))  # Species composition of groups, by group x period x region
 PT$GROUP_FK   <- paste0("S",PT$GROUP_FK)
 PT$SPECIES_FK <- paste0("S",PT$SPECIES_FK)
 
