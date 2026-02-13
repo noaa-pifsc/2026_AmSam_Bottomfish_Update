@@ -1,4 +1,5 @@
-require(pacman); pacman::p_load(this.path, parallel); root_dir <- here(..=1); set.seed(123)
+library(this.path)
+library(parallel); root_dir <- here(..=1); set.seed(123)
 
 #use tokens associated with an email address with a specific domain
 options(gargle_oauth_email = "*@noaa.gov")
