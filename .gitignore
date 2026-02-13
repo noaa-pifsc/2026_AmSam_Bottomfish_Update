@@ -4,6 +4,7 @@
 .Ruserdata
 Run_r4ss.R
 Data/*
+Images/*
 Data/CTL_inputs.xlsx
 Data/CTL_parameters.xlsx
 Old
