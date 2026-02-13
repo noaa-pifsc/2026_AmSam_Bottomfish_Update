@@ -24,15 +24,15 @@ for(i in 1:4){
 
 cl    <- makeCluster (4)
 #for(i in 1:length(Lt)){
-lapply(list(Lt[[1]]),function(x)     { # Run a single model at a time
-#parLapply(cl,Lt,function(x){ # Run all models in parallel
+#lapply(list(Lt[[1]]),function(x)     { # Run a single model at a time
+parLapply(cl,Lt,function(x){ # Run all models in parallel
   
-  DirName    <- "004_new_catch_size_cpue" # Name of directory to create for this model run
-  runmodels  <- F   # Turn off if you want to process results only
+  DirName    <- "005_2025_endyr" # Name of directory to create for this model run
+  runmodels  <- T   # Turn off if you want to process results only
   printreport<- F   # Turn off to skip ss_diags report
   Create_species_report_figs <- F # Turn on to produce formatted figures and tables word document. Run after running all r4ss plots and diags
   N_boot     <- 0   # Set to 0 to turn bootstrap off
-  N_foreyrs  <- 7   # Set to 0 to turn forecast off or 7 to run for 7 years
+  N_foreyrs  <- 0   # Set to 0 to turn forecast off or 7 to run for 7 years
   RD         <- F   # Run Diagnostics (jitter, profile, retro)
   ProfRes    <- .1 # R0 profile resolution
   profile    <- "SR_LN(R0)" # string of parameter to profile across
@@ -48,10 +48,10 @@ lapply(list(Lt[[1]]),function(x)     { # Run a single model at a time
   Build_All_SS(species       = x$N, EST_option = "Normal", scenario = "base",
                SR_option     = "FishLife", M_option = x$M, GROWTH_option = x$G,
                LW_option     = x$LW,MAT_option = x$MT, initF = x$IF,
-               startyr       = Begin, endyr = 2024, 
+               startyr       = Begin, endyr = 2025, 
                fleets        = 1, #c(1,2,3), 
                N_samp        = 45,
-               write_files   = F, runmodels = runmodels, ext_args = "",
+               write_files   = T, runmodels = runmodels, ext_args = "",
                do_retro      = RD,retro_years = 0:-5,
                do_profile    = RD,profile = profile,
                profile.vec   = seq(x$R0[1], x$R0[2], ProfRes),
@@ -68,7 +68,7 @@ lapply(list(Lt[[1]]),function(x)     { # Run a single model at a time
     source(file.path(x$root, "Scripts","02_SS scripts","07_Run_Bootstraps.R"))
     source(file.path(x$root, "Scripts","03_Report scripts","Create_Boot_Tables.R"))
     source(file.path(x$root, "Scripts","03_Report scripts","Create_Boot_Figs.R"))
-    Run_Bootstraps(model_dir, N_boot=N_boot, endyr=2021, seed = 123)
+    Run_Bootstraps(model_dir, N_boot=N_boot, endyr=2025, seed = 123)
     Create_Boot_Tables(x$root,model_dir)
     Create_Boot_Figs(x$root,model_dir)
 }
@@ -76,7 +76,7 @@ lapply(list(Lt[[1]]),function(x)     { # Run a single model at a time
   if(N_foreyrs>0){  
     source(file.path(x$root, "Scripts", "02_SS scripts", "08_Run_Forecasts.R"))
     source(file.path(x$root,"Scripts","03_Report scripts","Create_Forecast_Figs_Tables.R"))
-    Run_Forecasts(model_dir, N_foreyrs=N_foreyrs, FixedCatchSeq=x$FixedCatchSeq, endyr=2021,SavedCores,DeleteForecastFiles, seed = 123)
+    Run_Forecasts(model_dir, N_foreyrs=N_foreyrs, FixedCatchSeq=x$FixedCatchSeq, endyr=2025,SavedCores,DeleteForecastFiles, seed = 123)
     Create_Forecast_Figs_Tables(x$root,model_dir)
   } 
   
