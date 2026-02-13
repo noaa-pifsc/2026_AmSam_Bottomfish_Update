@@ -3,7 +3,7 @@ require(pacman)
 pacman::p_load(boot,data.table,DHARMa,ggfortify,ggpubr,grid,gridExtra,directlabels,mgcv,mgcViz,ncdf4,httr,
                lubridate,lunar,purrr,googledrive,googlesheets4,tidyverse,tinytex,this.path,nFactors,openxlsx)
 
-# Need these specializes packages: r4ss v1.46.1 and ss3diags v2.0.3.9000 (branch "ndd" for now) 
+# Need these specialized packages: r4ss v1.46.1 and ss3diags v2.0.3.9000 (branch "ndd" for now) 
 #remotes::install_github("r4ss/r4ss")
 #remotes::install_github("PIFSCstockassessments/ss3diags")
 

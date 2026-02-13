@@ -1,0 +1,11 @@
+# Ignore folders
+SS3 models/
+SS3 final models/
+Outputs/
+
+# Ignore file types
+*.csv
+*.xlsx
+*.txt
+*.png
+*.html
