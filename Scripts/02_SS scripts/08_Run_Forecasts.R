@@ -102,14 +102,15 @@ Run_Forecasts <- function(model_dir, N_foreyrs, FixedCatchSeq, endyr, SavedCores
         aCatch_Last3yr <- aCatch %>% filter(year>=max(year)-2) %>% summarize(Catch=mean(catch)) %>% as.numeric()
         
         # Read original forecast file
-        forecast.file <- SS_readforecast(file =  file.path(temp_dir, "forecast.ss")) # read forecast file
+        forecast.file <- SS_readforecast(file =  file.path(temp_dir, "forecast.ss"), readAll = T) # read forecast file
          
         # Modify the forecast to include a new Fixed Catch to use in the projections
+        forecast.file$Forecast <- 2
         forecast.file$Nforecastyrs <- N_foreyrs
         forecast.file$ForeCatch    <- data.frame(Year = seq(endyr+1, endyr + N_foreyrs, by = 1),
                                          Season = 1, 
                                          Fleet = 1,
-                                         Catch = c(rep(aCatch_Last3yr,times=2),rep(aFixedCatch,times=N_foreyrs-2))) # For Marc: Change the number of years of fixed catch here once 2025 data is in the model
+                                         Catch = c(rep(aCatch_Last3yr,times=1),rep(aFixedCatch,times=N_foreyrs-1))) 
      
         # replace forecast file with modified version
         SS_writeforecast(forecast.file, dir = temp_dir, overwrite = TRUE)

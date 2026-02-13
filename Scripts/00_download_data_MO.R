@@ -2,7 +2,10 @@
 # Data used in the 2026 update
 # As of 12/25, use MySQL to access data bc Oracle isn't as updated. But code for how to access through Oracle is available below.
 # Meg Oshima
-#require(pacman)
+# Install renv for package management
+#install.packages("renv")
+# To install all packages needed: 
+renv::restore()
 pacman::p_load("DBI","tidyverse","data.table","this.path")
 
 root_dir <- this.path::here(..=1)
