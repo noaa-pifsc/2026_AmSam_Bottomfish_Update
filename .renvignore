@@ -2,6 +2,7 @@
 SS3 models/
 SS3 final models/
 Outputs/
+Images/
 
 # Ignore file types
 *.csv
