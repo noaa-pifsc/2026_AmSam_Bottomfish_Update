@@ -1,11 +1,13 @@
-# Check if all required packages are installed, and install if not. Note: You need r4ss v.1.44.0 and ss3diags obtained from github repos.
-require(pacman)
-pacman::p_load(boot,data.table,DHARMa,ggfortify,ggpubr,grid,gridExtra,directlabels,mgcv,mgcViz,ncdf4,httr,
-               lubridate,lunar,purrr,googledrive,googlesheets4,tidyverse,tinytex,this.path,nFactors,openxlsx)
+# Install renv for package management
+#install.packages("renv")
+# To install all packages needed: 
+renv::restore()
 
-# Need these specialized packages: r4ss v1.46.1 and ss3diags v2.0.3.9000 (branch "ndd" for now) 
-#remotes::install_github("r4ss/r4ss")
-#remotes::install_github("PIFSCstockassessments/ss3diags")
+# If you add code that needs another package use `renv::install()` to install the package (works for CRAN and github packages), then save the metadata to the lockfile using `renv::snapshot()`. Make sure to push changes to the lockfile to the github repo. 
+# It's always good practice to run `renv::restore()` if you have pulled any changes that way you make sure you have the most up-to-date library. 
+# To check if you need to update or are missing a package, run `renv::status()`
+lapply(c("boot","data.table","DHARMa","ggfortify","ggpubr","grid","gridExtra","directlabels","mgcv","mgcViz","ncdf4","httr",
+               "lubridate","lunar","purrr","googledrive","googlesheets4","tidyverse","tinytex","this.path","nFactors","openxlsx"), library, character.only = TRUE)
 
 # Note: if encountering authentication error with Google Drive, delete the "Gargle" folder in C:\Users\<you name>\AppData\Local\R\win-library\4.2\gargle
 # (note that AppData is a hidden folder)
