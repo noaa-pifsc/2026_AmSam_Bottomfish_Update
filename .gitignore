@@ -15,6 +15,7 @@ SS3/000_Profiles
 fmin.log
 plot_r0_profile.R
 run_R0_parallel.R
+*.Rproj
 *.log
 *.rep
 *.1
