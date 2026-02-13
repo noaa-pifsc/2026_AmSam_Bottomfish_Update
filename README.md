@@ -21,10 +21,22 @@ The folder structure is as follows:
 
 
 ## To use this repo 
-1. Clone repository onto personal laptop. 
-2. Open /Scripts/01_Run data scripts.R 
-3. Run script and login and give full permission to Google Drive when prompted (click bottom option to read and write to files). 
-4. Open /Scripts/02_Run SS models.R and adjust settings as needed. For first run, it is recommended to set the following options:
+1. Clone repository onto personal laptop.
+2. To install all necessary r packages, use {renv}:
+```
+install.packages("renv")
+renv::restore()
+```
+This installs all packages for the project based on the metadata in the `renv.lock` file. If you are adding any new packages to the codebase, use:
+```
+renv::install("name_of_package) #works for packages on Github as well
+renv::snapshot()
+```
+and be sure to push the changes to the lockfile to the Github repo.
+3. To download data from MySQL, follow the 00_download_data_MO.R script and be sure to use your own username and password. **NOTE** be sure not to hard code any passwords in the script and push to the repository!!
+4. Open /Scripts/01_Run data scripts.R 
+5. Run script and login and give full permission to Google Drive when prompted (click bottom option to read and write to files). 
+6. Open /Scripts/02_Run SS models.R and adjust settings as needed. For first run, it is recommended to set the following options:
    * runmodels = T
    * Specify DirName as the name of the folder you want to create (e.g. 01_Base)
    * printreport = F
@@ -36,10 +48,10 @@ The folder structure is as follows:
    * DeleteForecastFiles = T (inside Build_All_SS function)
    * write_files = T (inside Build_All_SS function)
    * readGoogle = T (inside Build_All_SS function)
-5. Create list of species and settings (Lt)
-6. To run 1 species, set i to the number that species is in the list (e.g. i = 1 for APRU) and run line 20 (`lapply(list(Lt[[i]]),function(x) {...}`).
-7. To run all species use line 19 to run for loop. 
-8. Once model runs, to run diagnostics and print diagnostic report, set:
+7. Create list of species and settings (Lt)
+8. To run 1 species, set i to the number that species is in the list (e.g. i = 1 for APRU) and run line 20 (`lapply(list(Lt[[i]]),function(x) {...}`).
+9. To run all species use line 19 to run for loop. 
+10. Once model runs, to run diagnostics and print diagnostic report, set:
    * runmodels = F
    * printreport = T
    * RD = T (make sure do_retro, do_profile, and do_jitter are set to RD)
@@ -48,10 +60,10 @@ The folder structure is as follows:
    * write_files = F (inside Build_All_SS function)
    * Njitter = 100 (inside Build_All_SS function)
    * jitterFraction = 0.1
-9. Once diagnostics are run on the single model, run bootstraps by setting N_boot = 30, keeping write_files = F, runmodels = F, and setting RD = F and printreport = F.
-10. To run projections, set N_boot back to 0 and N_foreyrs = 7. Projections will be run based on the specified catch range in `Lt$FixedCatchSeq`. 
-11. Alternate models can be run by /Scripts/02_SS scripts/09_Run_Alt_Models.R. Note that alternate life history scenarios were changed and run manually. Figures and tables for alternate model runs can be created with /Scripts/03_Report scripts/Create_AltMods_Figs_Tables.R. 
-12. Once all models and figures are created, formatted figures and tables for the report can be created with 02_Run SS models.R by turning all model runs off and only creating the species report figures:
+11. Once diagnostics are run on the single model, run bootstraps by setting N_boot = 30, keeping write_files = F, runmodels = F, and setting RD = F and printreport = F.
+12. To run projections, set N_boot back to 0 and N_foreyrs = 7. Projections will be run based on the specified catch range in `Lt$FixedCatchSeq`. 
+13. Alternate models can be run by /Scripts/02_SS scripts/09_Run_Alt_Models.R. Note that alternate life history scenarios were changed and run manually. Figures and tables for alternate model runs can be created with /Scripts/03_Report scripts/Create_AltMods_Figs_Tables.R. 
+14. Once all models and figures are created, formatted figures and tables for the report can be created with 02_Run SS models.R by turning all model runs off and only creating the species report figures:
     * runmodels = F
     * printreport = F
     * Create_species_report_figs = T
