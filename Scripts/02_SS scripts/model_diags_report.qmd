@@ -214,7 +214,7 @@ print(profile.str)
 # read the output files (with names like Report1.sso, Report2.sso, etc.)
 profile.dirs <- file.path(getwd(), paste0(params$profile, "_profile"))
 file.copy(from = file.path(getwd(), "data_echo.ss_new"), 
-  to = file.path(profile.dir, "data_echo.ss_new"), overwrite = T)
+  to = file.path(profile.dirs, "data_echo.ss_new"), overwrite = T)
 profilemodels <- SSgetoutput(dirvec = profile.dirs,
                              keyvec = 1:Nprofile, verbose = FALSE)
 # summarize output
