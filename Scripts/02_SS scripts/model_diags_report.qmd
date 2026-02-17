@@ -229,12 +229,14 @@ profilesummary <- SSsummarize(profilemodels, verbose = FALSE)
 
 # plot profile using summary created above
 SSplotProfile(profilesummary, # summary object
-  profile.string = profile.str, # substring of profile parameter
+  profile.string = substr(profile.str, start = 1, stop = 5), # substring of profile parameter
+  exact = F,
   profile.label = params$profile
 )
 
 PinerPlot(profilesummary, component = "Surv_like",
-          profile.string = profile.str,
+          profile.string = substr(profile.str, start = 1, stop = 5), # substring of profile parameter
+          exact = F,
           profile.label = params$profile,
           main = "Changes in survey likelihood by fleet")
 
