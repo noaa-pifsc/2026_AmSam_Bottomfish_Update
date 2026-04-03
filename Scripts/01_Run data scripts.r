@@ -46,6 +46,7 @@ source(paste0(here(..=1),"/Scripts/01_Data scripts/05_CPUE_BBS_Standardize_Funct
 root_dir <- root_dir <- this.path::here(.. = 1) # establish directories using this.path
 
 Species.List <- c("APRU","APVI","CALU","ETCO","LERU","LUKA","PRFL","PRZO","VALO")
+
 Area.List    <- c("Tutuila","Manua")
 
 # Run CPUE standardization for all species and areas in a loop
@@ -57,7 +58,7 @@ Area.List    <- c("Tutuila","Manua")
 
 # Run CPUE standardization for all species, areas combined in a loop
 for(i in 1:length(Species.List)){
-    Standardize_CPUE2(Sp=Species.List[i],Interaction=T,minYr=2016,maxYr=2024) 
+    Standardize_CPUE2(Sp=Species.List[i],Interaction=T,minYr=2016,maxYr=2025) 
 }
 
 
