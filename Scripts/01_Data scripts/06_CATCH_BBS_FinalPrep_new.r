@@ -22,7 +22,7 @@ d                 <- merge(d,S,by.x="SPECIES_FK",by.y="SPECIES_PK")
 # follow Toby's instructions to break the unique key SPC_PK into the interview details we need
 d <- mutate(d,YEAR = as.numeric(DATA_YEAR), METHOD = METHOD_FK, 
                    ZONE = ISLAND, TYPE = TYPE_OF_DAY, 
-                   CHARTER = substr(EXP_FK,17,17), PROCESS = substr(EXP_FK,18,18))
+                   CHARTER = substr(exp_fk,17,17), PROCESS = substr(exp_fk,18,18))
 
 #d[is.na(VAR_LBS_CAUGHT)]$VAR_LBS_CAUGHT <- 0 # IS this necessary? Does it have an impact? 
 
