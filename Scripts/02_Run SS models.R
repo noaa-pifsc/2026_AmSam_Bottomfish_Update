@@ -22,21 +22,21 @@ for(i in 1:4){
 
 cl    <- makeCluster (4)
 #for(i in 1:length(Lt)){
-#lapply(list(Lt[[1]]),function(x)     { # Run a single model at a time
-parLapply(cl,Lt,function(x){ # Run all models in parallel
+lapply(list(Lt[[1]]),function(x)     { # Run a single model at a time
+#parLapply(cl,Lt,function(x){ # Run all models in parallel
   
   DirName    <- "06_Base_Final" # Name of directory to create for this model run
-  runmodels  <- T   # Turn off if you want to process results only
-  printreport<- T   # Turn off to skip ss_diags report
+  runmodels  <- F   # Turn off if you want to process results only
+  printreport<- F   # Turn off to skip ss_diags report
   Create_species_report_figs <- F # Turn on to produce formatted figures and tables word document. Run after running all r4ss plots and diags
-  N_boot     <- 0   # Set to 0 to turn bootstrap off
+  N_boot     <- 30   # Set to 0 to turn bootstrap off
   N_foreyrs  <- 0   # Set to 0 to turn forecast off or 7 to run for 7 years
-  RD         <- T   # Run Diagnostics (jitter, profile, retro)
+  RD         <- F   # Run Diagnostics (jitter, profile, retro)
   ProfRes    <- .1 # R0 profile resolution
   profile    <- "SR_LN(R0)" # string of parameter to profile across
   Begin      <- c(1967,1986)[1] #start year of model, adjust to run no historical catch scenario
   DeleteForecastFiles <- T
-  SavedCores <- 2
+  SavedCores <- 1
   
   require(pacman); pacman::p_load(boot,data.table,httr,lubridate,ggpubr,grid,parallel,purrr,googledrive,googlesheets4,gt,quarto,openxlsx,tidyverse,r4ss,officer,flextable)
   source(file.path(x$root,"Scripts","02_SS scripts","01_Build_All_SS.R"))
@@ -98,8 +98,7 @@ parLapply(cl,Lt,function(x){ # Run all models in parallel
     
   }
   
-})
-
-#}
+#})
+}
 
 stopCluster (cl)
