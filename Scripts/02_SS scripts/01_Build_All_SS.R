@@ -140,9 +140,11 @@ Build_All_SS <- function(species,
  
   ## Step 3. Create other inputs ###---------------------------------------------------
   ### Create subdirectory
-  if(!dir.exists(file.path(root_dir, "SS3 models", species, file_dir))){
-    dir.create(file.path(root_dir, "SS3 models", species, file_dir), showWarnings = F)
-  }
+  #if(!dir.exists(file.path(root_dir, "SS3 models", species, file_dir))){
+  #  dir.create(file.path(root_dir, "SS3 models", species, file_dir), showWarnings = F)
+  #}
+  
+  fs::dir_create(fs::path(root_dir,"SS3 models",species,file_dir))
   
   ## Create text file with notes from CTL_params sheet for reference
   sink(file.path(root_dir, "SS3 models", species, file_dir,"model_options.txt"))
