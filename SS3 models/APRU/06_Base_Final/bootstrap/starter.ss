@@ -1,7 +1,7 @@
 #C file created using an r4ss function
-#C file write time: 2026-04-06  17:43:24
+#C file write time: 2026-04-07  09:04:47
 #
-data_boot_030.ss #_datfile
+data_boot_010.ss #_datfile
 control.ss #_ctlfile
 0 #_init_values_src
 1 #_run_display_detail
