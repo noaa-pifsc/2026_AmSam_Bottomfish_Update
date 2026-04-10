@@ -1,6 +1,6 @@
 #C data file for ETCO
 #C file created using an r4ss function
-#C file write time: 2026-04-06  17:47:00
+#C file write time: 2026-04-09  11:25:53
 #
 1967 #_styr
 2025 #_endyr

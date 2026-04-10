@@ -1,5 +1,5 @@
 #C file created using an r4ss function
-#C file write time: 2026-04-07  13:39:25
+#C file write time: 2026-04-09  11:25:31
 #
 data.ss #_datfile
 control.ss #_ctlfile
