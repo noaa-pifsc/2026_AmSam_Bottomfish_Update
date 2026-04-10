@@ -29,7 +29,7 @@ paste0(params$species)
 
 ```{r}
 #| label: fig-data
-#| fig-cap: "Summary of data types used in the Stock Synthesis model. Catches include boat-based and shore-based landings from creel surveys (1986-2021), as well as historical catches from reports (1967-1985). The abundance index is from boat-based creel survey \"bottomfishing\" gear type. Length compositions are from creel surveys (all years) and the biosampling program (2010-2015), filtered for the \"bottomfishing\" gear. "
+#| fig-cap: "Summary of data types used in the Stock Synthesis model. Catches include boat-based and shore-based landings from creel surveys (1986-2025), as well as historical catches from reports (1967-1985). The abundance index is from boat-based creel survey \"bottomfishing\" gear type. Length compositions are from creel surveys (all years) and the biosampling program (2010-2015), filtered for the \"bottomfishing\" gear. "
 #| out-width: 10.51cm
 #| fig-align: center
 
@@ -277,25 +277,25 @@ refpoints.ft <- compose(refpoints.ft, i = 1, j = 1, part = "body",
                         value = as_paragraph(as_i("F"), as_sub("MSY"), " (yr", as_sup("-1"), ")"))
 
 refpoints.ft <- compose(refpoints.ft, i = 2, j = 1, part = "body", 
-                        value = as_paragraph(as_i("F"), as_sub("2021"), " (yr", as_sup("-1"), ")"))
+                        value = as_paragraph(as_i("F"), as_sub("2025"), " (yr", as_sup("-1"), ")"))
 
 refpoints.ft <- compose(refpoints.ft, i = 3, j = 1, part = "body", 
-                        value = as_paragraph(as_i("F"), as_sub("2021"), "/", as_i("F"), as_sub("MSY")))
+                        value = as_paragraph(as_i("F"), as_sub("2025"), "/", as_i("F"), as_sub("MSY")))
 
 refpoints.ft <- compose(refpoints.ft, i = 4, j = 1, part = "body", 
                         value = as_paragraph(as_i("SSB"), as_sub("MSST")))
 refpoints.ft <- compose(refpoints.ft, i = 5, j = 1, part = "body", 
-                        value = as_paragraph(as_i("SSB"), as_sub("2021"), " (mt)"))
+                        value = as_paragraph(as_i("SSB"), as_sub("2025"), " (mt)"))
 refpoints.ft <- compose(refpoints.ft, i = 6, j = 1, part = "body", 
-                        value = as_paragraph(as_i("SSB"), as_sub("2021"), "/", as_i("SSB"), as_sub("MSST")))
+                        value = as_paragraph(as_i("SSB"), as_sub("2025"), "/", as_i("SSB"), as_sub("MSST")))
 refpoints.ft <- compose(refpoints.ft, i = 7, j = 1, part = "body", 
                         value = as_paragraph("MSY (mt)"))
 refpoints.ft <- compose(refpoints.ft, i = 8, j = 1, part = "body", 
-                        value = as_paragraph("Catch", as_sub("2019-2021"), " (mt)"))
+                        value = as_paragraph("Catch", as_sub("2023-2025"), " (mt)"))
 refpoints.ft <- compose(refpoints.ft, i = 9, j = 1, part = "body", 
                         value = as_paragraph(as_i("SPR"), as_sub("MSY")))
 refpoints.ft <- compose(refpoints.ft, i = 10, j = 1, part = "body", 
-                        value = as_paragraph(as_i("SPR"), as_sub("2021")))
+                        value = as_paragraph(as_i("SPR"), as_sub("2025")))
 refpoints.ft <- align(refpoints.ft, j = 2, align = "right", part = "body")
 refpoints.ft
 ```
@@ -303,7 +303,7 @@ refpoints.ft
 
 ```{r}
 #| label: fig-kobe
-#| fig-cap: "Kobe plot representing the trend in relative fishing mortality and spawning stock biomass between 1969 and 2021 with their associated biological reference areas (red: overfished and overfishing, yellow: overfishing or overfished, green: no overfishing and not overfished). The large red dot indicates median stock status in 2021 and the black dots are one thousand Monte Carlo draws from the stock status distribution to represent the uncertainty around the final year status."
+#| fig-cap: "Kobe plot representing the trend in relative fishing mortality and spawning stock biomass between 1969 and 2025 with their associated biological reference areas (red: overfished and overfishing, yellow: overfishing or overfished, green: no overfishing and not overfished). The large red dot indicates median stock status in 2025 and the black dots are one thousand Monte Carlo draws from the stock status distribution to represent the uncertainty around the final year status."
 #| out-width: 14cm
 #| fig-align: center
 
@@ -334,21 +334,21 @@ Results.ft <- hline_top(Results.ft, border = border, part = "header")
 Results.ft <- hline_bottom(Results.ft, border = border, part = "header")
 
 Results.ft <- compose(Results.ft, j = 2, part = "header", 
-                        value = as_paragraph(as_i("F"), as_sub("2021")))
+                        value = as_paragraph(as_i("F"), as_sub("2025")))
 Results.ft <- compose(Results.ft, j = 3, part = "header", 
                         value = as_paragraph(as_i("F"), as_sub("MSY")))
 Results.ft <- compose(Results.ft, j = 4, part = "header", 
-                        value = as_paragraph(as_i("F"), as_sub("2021"), "/", as_i("F"), as_sub("MSY")))
+                        value = as_paragraph(as_i("F"), as_sub("2025"), "/", as_i("F"), as_sub("MSY")))
 Results.ft <- compose(Results.ft, j = 5, part = "header", 
                         value = as_paragraph(as_i("SSB"), as_sub("MSY")))
 Results.ft <- compose(Results.ft, j = 6, part = "header", 
                         value = as_paragraph(as_i("SSB"), as_sub("MSST")))
 Results.ft <- compose(Results.ft, j = 7, part = "header", 
-                        value = as_paragraph(as_i("SSB"), as_sub("2021")))
+                        value = as_paragraph(as_i("SSB"), as_sub("2025")))
 Results.ft <- compose(Results.ft, j = 8, part = "header", 
-                        value = as_paragraph(as_i("SSB"), as_sub("2021"), "/", as_i("SSB"), as_sub("MSY")))
+                        value = as_paragraph(as_i("SSB"), as_sub("2025"), "/", as_i("SSB"), as_sub("MSY")))
 Results.ft <- compose(Results.ft, j = 9, part = "header", 
-                        value = as_paragraph(as_i("SSB"), as_sub("2021"), "/", as_i("SSB"), as_sub("MSsT")))
+                        value = as_paragraph(as_i("SSB"), as_sub("2025"), "/", as_i("SSB"), as_sub("MSsT")))
 Results.ft <- compose(Results.ft, j = 10, part = "header", 
                         value = as_paragraph("Catch", as_sub("MSY")))
 Results.ft <- align(Results.ft, align = "center", part = "body")
@@ -404,7 +404,7 @@ include_graphics(path)
 {{< pagebreak >}}
 
 ```{r}
-#| tbl-cap: "The annual fixed catch values (metric tons) applied from 2024 to a final projection year resulting in a given probability of overfishing (F/FMSY>1) in that final year. Catches for years prior to the start of the new catch guidance (2022 and 2023) were fixed at the mean of the last 3 years of catch data (2019 to 2021)."
+#| tbl-cap: "The annual fixed catch values (metric tons) applied from 2027 to a final projection year resulting in a given probability of overfishing (F/FMSY>1) in that final year. Catch for the year prior to the start of the new catch guidance (2026) was fixed at the mean of the last 3 years of catch data (2023 to 2025)."
 #| tbl-cap-location: top
 
 no_border <- fp_border(width = 0)
@@ -424,7 +424,7 @@ proj.table.ft <- compose(proj.table.ft, j = 1, part = "header",
                                              as_i("F"),as_sub("MSY")))
 proj.table.ft <- align(proj.table.ft, align = "right", part = "body")
 proj.table.ft <- add_header_row(proj.table.ft, 
-                                values = c("", "Fixed catch (mt) from 2024 to:"), colwidths = c(1, 5))
+                                values = c("", "Fixed catch (mt) from 2027 to:"), colwidths = c(1, 5))
 proj.table.ft <- hline_top(proj.table.ft, border = border, part = "header")
 proj.table.ft <- hline_bottom(proj.table.ft, border = border, part = "header")
 proj.table.ft <- border_inner_h(proj.table.ft, border = no_border, part = "header")
@@ -444,7 +444,7 @@ include_graphics(path)
 
 ```{r}
 #| label: fig-projstatus
-#| fig-cap: "Probability of overfishing (left panel) and of stock being overfished (right panel) for a range of catch values (metric tons) fixed for a given range of years starting in 2024. The stock status probabilities are for the final projection year."
+#| fig-cap: "Probability of overfishing (left panel) and of stock being overfished (right panel) for a range of catch values (metric tons) fixed for a given range of years starting in 2028 The stock status probabilities are for the final projection year."
 #| fig-align: center
 
 
