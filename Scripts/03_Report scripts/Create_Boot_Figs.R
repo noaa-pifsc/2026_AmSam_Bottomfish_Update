@@ -99,6 +99,9 @@ TS <- BS %>%
 
 SSB_MSST <- BS %>% summarize(BMSST.50=median(BMSST)) %>% as.numeric()
 
+# Extract final year for future use below
+
+ENDYR <- max(TS$YEAR)
 
 # Other quantities taken straight from report.sso
 SS         <- data.table( SS.results$timeseries )
@@ -111,13 +114,13 @@ TS <- TS %>% merge(TBIO,by.x="YEAR",by.y="Yr")
 
 P1 <- ggplot(data=TS)+geom_point(aes(x=1968,y=SSB0),col="red",size=1.5)+#geom_line(aes(x=YEAR,y=TBIO),linetype="dashed")
   geom_ribbon(aes(x=YEAR,ymin=SSB.05,ymax=SSB.95),alpha=0.1)+scale_y_continuous(limits=c(0,max(TS$SSB.95)*1.1),expand=c(0,0))+
-  scale_x_continuous(breaks=seq(1960,2030,10),limits=c(1967,2023),expand=c(0,0))+
+  scale_x_continuous(breaks=seq(1960,2030,10),limits=c(1967,ENDYR),expand=c(0,0))+
   geom_line(aes(x=YEAR,y=SSB.50),linetype="solid")+geom_hline(aes(yintercept=SSB_MSST),linetype="dotdash",col="blue")+
   theme_bw()+theme(axis.text.x=element_blank(),axis.title.x=element_blank())+ylab("Biomass (mt)")
   
 
 P2 <- ggplot(data=TS,aes(x=YEAR,y=FMORT.50))+geom_ribbon(aes(ymin=FMORT.05,ymax=FMORT.95),alpha=0.1)+geom_line()+
-  scale_x_continuous(breaks=seq(1960,2030,10),limits=c(1967,2023),expand=c(0,0))+
+  scale_x_continuous(breaks=seq(1960,2030,10),limits=c(1967,ENDYR),expand=c(0,0))+
   scale_y_continuous(expand=c(0,0))+theme_bw()+xlab("Year")+ylab(expression(Fishing~mortality~(yr^-1)))
   
 P1 <- ggplotGrob(P1)
@@ -135,7 +138,7 @@ ggsave(g,file=file.path(boot_dir,"03_Quants.png"),width=14,height=10,units="cm")
 SS      <- data.table( SS.results$derived_quants )
 SSB     <- SS[str_detect(SS$Label,"SSB")][3:57,2]
 REC     <- SS[str_detect(SS$Label,"Recr")][3:57,2]
-YEAR    <- seq(1967,2021)
+YEAR    <- seq(1967,ENDYR)
 
 SSB      <- cbind(SSB,YEAR)
 REC      <- cbind(REC,YEAR)
