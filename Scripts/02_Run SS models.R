@@ -11,7 +11,7 @@ Lt     <-vector("list",4) # Species options
 #             Name    M                  Growth             LW             Mat           InitF? R0 prof.  Btarg. SupYer?   SuperYr blocks                        # Projections catch range
 Lt[[1]]<-list("APRU", "SW_Then",         "SW_BBS_BIOS",     "Kamikawa",    "SW_BBS_BIOS", F, c(0.5,1.6), 0.29,    T, list(c(2019,2020),c(2021,2025)),              c(2.5,5.5,0.2)) 
 Lt[[2]]<-list("ETCO", "Andrews_Then",    "Andrews_Sex",     "Kamikawa",    "Reed",        F, c(0.2,1.6), 0.29,    T, list(c(2018,2020)),                           c(1.5,3,0.1)) 
-Lt[[3]]<-list("PRFL", "OMalley_Then",    "OMalley",         "Kamikawa",    "SW_BBS_BIOS", F, c(0.5,1.5), 0.29,    T, list(c(2011,2012),c(2018,2020),c(2022,2025)), c(0.7,1.7,0.1)) 
+Lt[[3]]<-list("PRFL", "OMalley_Then",    "OMalley",         "Kamikawa",    "SW_BBS_BIOS", F, c(0.5,1.5), 0.29,    T, list(c(2011,2012),c(2018,2020),c(2022,2025)), c(0.5,1.5,0.1)) 
 Lt[[4]]<-list("PRZO", "Schemmel_Then",   "Schemmel_Sex",    "Kamikawa",    "Schemmel",    F, c(0.5,1.3), 0.29,    T, list(c(2009,2011),c(2012,2014),c(2015,2016)), c(0.5,1.0,0.05)) 
 
 ## Name items in list
@@ -21,22 +21,23 @@ for(i in 1:4){
   }
 
 #cl    <- makeCluster (4)
-#for(i in 1:length(Lt)){
-lapply(list(Lt[[1]]),function(x)     { # Run a single model at a time
+for(i in 1:length(Lt)){ x <- Lt[[i]]
+#lapply(list(Lt[[3]]),function(x)     { # Run a single model at a time
 #parLapply(cl,Lt,function(x){ # Run all models in parallel
   
   DirName    <- "06_Base_Final" # Name of directory to create for this model run
   runmodels  <- F   # Turn off if you want to process results only
   printreport<- F   # Turn off to skip ss_diags report
-  Create_species_report_figs <- F # Turn on to produce formatted figures and tables word document. Run after running all r4ss plots and diags
+  Create_species_report_figs <- T # Turn on to produce formatted figures and tables word document. Run after running all r4ss plots and diags
   N_boot     <- 0   # Set to 0 to turn bootstrap off
-  N_foreyrs  <- 7   # Set to 0 to turn forecast off or 7 to run for 7 years
+  N_foreyrs  <- 0   # Set to 0 to turn forecast off or 7 to run for 7 years
   RD         <- F   # Run Diagnostics (jitter, profile, retro)
   ProfRes    <- .1 # R0 profile resolution
   profile    <- "SR_LN(R0)" # string of parameter to profile across
   Begin      <- c(1967,1986)[1] #start year of model, adjust to run no historical catch scenario
+  End        <- 2025 # Final year of data
   DeleteForecastFiles <- F
-  SavedCores <- 4
+  SavedCores <- 2
   
   require(pacman); pacman::p_load(boot,data.table,httr,lubridate,ggpubr,grid,parallel,purrr,googledrive,googlesheets4,gt,quarto,openxlsx,tidyverse,r4ss,officer,flextable)
   source(file.path(x$root,"Scripts","02_SS scripts","01_Build_All_SS.R"))
@@ -47,7 +48,7 @@ lapply(list(Lt[[1]]),function(x)     { # Run a single model at a time
   Build_All_SS(species       = x$N, EST_option = "Normal", scenario = "base",
                SR_option     = "FishLife", M_option = x$M, GROWTH_option = x$G,
                LW_option     = x$LW,MAT_option = x$MT, initF = x$IF,
-               startyr       = Begin, endyr = 2025, 
+               startyr       = Begin, endyr = End, 
                fleets        = 1, #c(1,2,3), 
                N_samp        = 45,
                write_files   = T, runmodels = runmodels, ext_args = "",
@@ -67,7 +68,7 @@ lapply(list(Lt[[1]]),function(x)     { # Run a single model at a time
     source(file.path(x$root, "Scripts","02_SS scripts","07_Run_Bootstraps.R"))
     source(file.path(x$root, "Scripts","03_Report scripts","Create_Boot_Tables.R"))
     source(file.path(x$root, "Scripts","03_Report scripts","Create_Boot_Figs.R"))
-    Run_Bootstraps(model_dir, N_boot=N_boot, endyr=2025, seed = 123)
+    Run_Bootstraps(model_dir, N_boot=N_boot, endyr=End, seed = 123)
     Create_Boot_Tables(x$root,model_dir)
     Create_Boot_Figs(x$root,model_dir)
 }
@@ -75,7 +76,7 @@ lapply(list(Lt[[1]]),function(x)     { # Run a single model at a time
   if(N_foreyrs>0){  
     source(file.path(x$root, "Scripts", "02_SS scripts", "08_Run_Forecasts.R"))
     source(file.path(x$root,"Scripts","03_Report scripts","Create_Forecast_Figs_Tables.R"))
-    Run_Forecasts(model_dir, N_foreyrs=N_foreyrs, FixedCatchSeq=x$FixedCatchSeq, endyr=2025,SavedCores,DeleteForecastFiles, seed = 123)
+    Run_Forecasts(model_dir, N_foreyrs=N_foreyrs, FixedCatchSeq=x$FixedCatchSeq, endyr=End,SavedCores,DeleteForecastFiles, seed = 123)
     Create_Forecast_Figs_Tables(x$root,model_dir)
   } 
   
@@ -98,7 +99,7 @@ lapply(list(Lt[[1]]),function(x)     { # Run a single model at a time
     
   }
   
-})
-#}
+#})
+}
 
 stopCluster (cl)
