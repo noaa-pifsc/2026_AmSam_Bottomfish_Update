@@ -1,12 +1,15 @@
 Standardize_CPUE2 <- function(Sp, Interaction=T,minYr=2016,maxYr=2021) {
   
-require(data.table); require(tidyverse); require(mgcv); require(DHARMa); require(mgcViz); require(RColorBrewer); require(openxlsx); require(boot); require(gridExtra); require(grid); require(viridis)
+require(data.table); require(tidyverse); require(mgcv); require(DHARMa); require(mgcViz); require(RColorBrewer);
+require(openxlsx); require(boot); require(gridExtra); require(grid); require(viridis)
 
 Model.Years <- paste0(minYr,"_",maxYr)  
     
 dir.create(paste0(root_dir,"/Outputs/SS3_Inputs/CPUE"),recursive=T,showWarnings=F)
 dir.create(paste0(root_dir,"/Outputs/Summary/CPUE figures"),recursive=T,showWarnings=F)
-                                                              
+                  
+Fig.Folder  <- paste0(root_dir,"/Outputs/Summary/CPUE figures")
+                                            
 C <- readRDS(file.path(root_dir,"Outputs","CPUE_C.rds")); length(unique(C$INTERVIEW_PK))
 S <- data.table(  read.xlsx(file.path(root_dir,"Data","METADATA.xlsx"),sheet="BMUS")  )
 S <- select(S,SPECIES_PK,SPECIES)
@@ -117,21 +120,20 @@ P.SelResults$CPUE_TYPE <- "Positive-only CPUE"
 P.SelResults           <- select(P.SelResults,CPUE_TYPE,DESCRIPTION,FORMULA,AIC,DELT_AIC)
 
 # Generate model diagnostic figures
-png(file.path(root_dir,"Outputs","Summary","CPUE figures",paste0(Sp,"_DiagsPos1.png")),width=12,height=10,unit="in",res=300)
-#par(mfrow=c(2,2))
-gam.check(LastModel)
-# M1 <- recordPlot()
-# replayPlot(M1)
+png(file.path(root_dir,"Outputs","Summary","CPUE figures",paste0(Sp,"_DiagsPos1.png")),width=7,height=1.2,unit="in",res=300)
+par(mfrow=c(1,4),mar=c(3,3,1,1))
+gam.check(LastModel,cex.axis=0.7,cex.lab=0.7,cex.main=0.7)
 dev.off()
 
-if(!is.null(anova(LastModel)$s.table)){ # Check if there are nonlinear terms to plot
- #par(mfrow=c(1,4))
- #M2 <- recordPlot()
- png(file.path(root_dir,"Outputs","Summary","CPUE figures",paste0(Sp,"_DiagsPos2.png")),width=12,height=10,unit="in",res=300)
- plot(LastModel,residuals=T,shade=T,shift = coef(LastModel)[1], seWithMean = TRUE)
- #replayPlot(M2)
- dev.off()
+# Check if there are nonlinear terms to plot
+N_nonlinear <- nrow(anova(LastModel)$s.table>0)
+if(!is.null(N_nonlinear)){ 
+  png(file.path(Fig.Folder,paste0(Sp,"_DiagsPos2.png")),width=1.75*N_nonlinear,height=1.2,unit="in",res=300)
+  par(mfrow=c(1,N_nonlinear),mar=c(2,2,0.1,2))
+  plot(LastModel, residuals=T, shade=T, shift=coef(LastModel)[1], seWithMean=TRUE,cex.lab=0.7,cex.axis=0.7,mgp=c(1, 0.5, 0))
+  dev.off()
 }
+
 
 # Backward selection: Probability of catch-only models
 if(Interaction==T){
@@ -182,24 +184,27 @@ B.SelResults            <- select(B.SelResults,CPUE_TYPE,DESCRIPTION,FORMULA,AIC
 
 # Check model results
 #par(mfrow=c(1,4))
-gam.check(LastModel)
-dev.off()
+#gam.check(LastModel)
+#dev.off()
 
 # QQ plots for logistic GAM using DHARMa package
-#par(mfrow=c(1,4))
 simulationOutput <- simulateResiduals(fittedModel = LastModel)
-png(file.path(root_dir,"Outputs","Summary","CPUE figures",paste0(Sp,"_DiagsProb1.png")),width=1.27,height=1.27,unit="in",res=300,pointsize=5)
+png(file.path(root_dir,"Outputs","Summary","CPUE figures",paste0(Sp,"_DiagsProb1.png")),width=1.75,height=1.2,unit="in",res=300,pointsize=5)
+par(mfrow=c(1,1),mar=c(4,2,0.5,2),mgp=c(2,0.8,0))
 plotQQunif(simulationOutput, testDispersion = FALSE,testUniformity = FALSE,testOutliers = FALSE)
 dev.off()
 
-if(nrow(anova(LastModel)$s.table)>0){ # Check if there are nonlinear terms to plot
-  par(mfrow=c(1,4))
-  plot(LastModel,trans=plogis,shade=T,residuals=T,shift = coef(LastModel)[1], seWithMean = TRUE)
-  M2 <- recordPlot()
-  png(file.path(root_dir,"Outputs","Summary","CPUE figures",paste0(Sp,"_DiagsProb2.png")),width=8,height=2,unit="in",res=300)
-  replayPlot(M2)
+# Check if there are nonlinear terms to plot
+N_nonlinear <- nrow(anova(LastModel)$s.table>0)
+if(!is.null(N_nonlinear)){ 
+  png(file.path(Fig.Folder,paste0(Sp,"_DiagsProb2.png")),width=1.75*N_nonlinear,height=1.2,unit="in",res=300)
+  par(mfrow=c(1,N_nonlinear),mar=c(2,2,0.1,2),mgp=c(1, 0.5, 0))
+  plot(LastModel,trans=plogis,shade=T,residuals=T,shift = coef(LastModel)[1], seWithMean = TRUE,cex.lab=0.5, cex.axis=0.5)
   dev.off()
 }
+
+
+
 
 # Put final summary table together and export CPUE index for input into SS3 
 Final          <- rbind(P.SelResults,B.SelResults)
@@ -385,13 +390,15 @@ Best.Mod$MODLABEL <- paste0("Non-zero model\n",str_wrap(Best.Mod$MODEL_POS,20),"
 Best.Mod[MODEL_POS=="NOMI"]$MODLABEL <- "Nominal"
 
 # Best model vs. NOMI graph
-P1 <- ggplot(data=Best.Mod,aes(x=YEAR,y=CPUE,col=MODLABEL))+geom_line()+
-       facet_wrap(~CPUE_TYPE,labeller=labeller(CPUE_TYPE=c("CPUE_TOT.STD"="Combined CPUE","CPUE_POS.STD"="Non-zero CPUE","CPUE_PROB.STD"="Prob. of catch CPUE")))+
-       labs(col=paste0("Model type"),linetype=paste0("Model type"))+xlab("Year")+ylab("Standard CPUE (%)")+theme_bw()+
-       theme(axis.title=element_text(size=8),legend.text=element_text(size=6),legend.key.height=unit(1.5,'cm'))
+P1 <- 
+  ggplot(data=Best.Mod,aes(x=YEAR,y=CPUE,col=MODLABEL))+geom_line()+
+  facet_wrap(~CPUE_TYPE,labeller=labeller(CPUE_TYPE=c("CPUE_TOT.STD"="Combined CPUE","CPUE_POS.STD"="Non-zero CPUE","CPUE_PROB.STD"="Prob. of catch CPUE")))+
+  labs(col=paste0("Model type"))+xlab("Year")+ylab("Standard CPUE (%)")+theme_bw()+
+  theme(axis.text=element_text(size=7), axis.title=element_text(size=7),legend.text=element_text(size=6),legend.key.height=unit(1.5,'cm'))+
+  scale_x_continuous(breaks = seq(2016, 2025, by = 2))
 
 #print(P1)
-ggsave(P1,file=paste0(root_dir,"/Outputs/Summary/CPUE figures/",Sp,"_Inter","_BestModel.png"),height=2,width=8,unit="in")
+ggsave(P1,file=paste0(root_dir,"/Outputs/Summary/CPUE figures/",Sp,"_Inter","_BestModel.png"),height=1.7,width=6.5,unit="in")
 
 
 #=======================Create trend comparison graphs==============================
@@ -412,22 +419,27 @@ Comp.Mod.B$MODEL <- fct_reorder(as.factor(Comp.Mod.B$MODEL),Comp.Mod.B$MODEL_ORD
 levels(Comp.Mod.B$MODEL) <- str_wrap(levels(Comp.Mod.B$MODEL),20)
 
 
-P3 <- ggplot()+geom_line(data=NOMI,aes(x=YEAR,y=CPUE_POS.STD),col="lightgray",size=3)+
-       geom_line(data=Comp.Mod.P,aes(x=YEAR,y=CPUE.STD,col=MODEL))+
-       scale_color_viridis(option="viridis",discrete=T,direction=1)+
-       xlab("Year")+ylab("Non-zero CPUE (%)")+
-       theme_bw()+theme(legend.position="right",axis.title=element_text(size=8),legend.title=element_blank(),legend.text=element_text(size=6),legend.key.height=unit(0.1,'cm'))
+P3 <- 
+  ggplot()+geom_line(data=NOMI,aes(x=YEAR,y=CPUE_POS.STD),col="lightgray",size=2)+
+  geom_line(data=Comp.Mod.P,aes(x=YEAR,y=CPUE.STD,col=MODEL))+
+  scale_color_viridis(option="viridis",discrete=T,direction=1)+
+  xlab("Year")+ylab("Non-zero CPUE (%)")+
+  theme_bw()+
+  theme(legend.position="right",axis.title=element_text(size=7),legend.title=element_blank(),legend.text=element_text(size=6),legend.key.height=unit(0.1,'cm'))+
+  scale_x_continuous(breaks = seq(2016, 2025, by = 3))
 
-P4 <- ggplot()+geom_line(data=NOMI,aes(x=YEAR,y=CPUE_PROB.STD),col="lightgray",size=3)+
-       geom_line(data=Comp.Mod.B,aes(x=YEAR,y=CPUE.STD,col=MODEL))+
-       scale_color_viridis(option="viridis",discrete=T,direction=1)+
-       xlab("Year")+ylab("Prob. of catch CPUE (%)")+
-       theme_bw()+theme(legend.position="right",axis.title=element_text(size=8),legend.title=element_blank(),legend.text=element_text(size=6),legend.key.height=unit(0.1,'cm'))
+P4 <- 
+  ggplot()+geom_line(data=NOMI,aes(x=YEAR,y=CPUE_PROB.STD),col="lightgray",size=2)+
+  geom_line(data=Comp.Mod.B,aes(x=YEAR,y=CPUE.STD,col=MODEL))+
+  scale_color_viridis(option="viridis",discrete=T,direction=1)+
+  xlab("Year")+ylab("Prob. of catch CPUE (%)")+theme_bw()+
+  theme(legend.position="right",axis.title=element_text(size=7),legend.title=element_blank(),legend.text=element_text(size=6),legend.key.height=unit(0.1,'cm'))+
+  scale_x_continuous(breaks = seq(2016, 2025, by = 3))
 
 gA <- ggplotGrob(P3)
 gB <- ggplotGrob(P4)
 Comp.Graph <- cbind(gA,gB)
-ggsave(Comp.Graph,file=paste0(root_dir,"/Outputs/Summary/CPUE figures/",Sp,"_Inter","_ModelComps.png"),height=2,width=8,unit="in")
+ggsave(Comp.Graph,file=paste0(root_dir,"/Outputs/Summary/CPUE figures/",Sp,"_Inter","_ModelComps.png"),height=1.7,width=6.5,unit="in")
 
 print(paste("Done with", Sp))
 
