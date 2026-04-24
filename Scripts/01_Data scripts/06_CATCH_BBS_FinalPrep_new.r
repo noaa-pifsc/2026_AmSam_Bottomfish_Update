@@ -64,7 +64,7 @@ d <- d[METHOD=="4"|METHOD=="5"|METHOD=="6"|METHOD=="8"|METHOD=="61"]
 #summing the lbs caught and variance of the lbs caught by year-area-fishing method-species combination
 d <- d[,list(LBS_CAUGHT=sum(LBS_CAUGHT),VAR_LBS_CAUGHT=sum(VAR_LBS_CAUGHT)),by=list(YEAR,ZONE,METHOD,SPECIES_FK)]
 
-# NOTE: 2022 does not have data for Tutuila, while Manua does. To prevent an error,
+# NOTE: 2022 does not have data for Tutuila for species 245, while Manua does. To prevent an error,
 # let's fill the 2022 catch with the previous year's catch (0.011 mt or 24 pounds).
 
 d <- d %>% add_row(YEAR=2022,ZONE="Tutuila",SPECIES_FK="S245",METHOD=5,
