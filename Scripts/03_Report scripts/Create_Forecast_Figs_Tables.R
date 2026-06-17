@@ -13,8 +13,8 @@ Create_Forecast_Figs_Tables <- function(root_dir,model_dir){
   mv_fore   <- data.table( readRDS(file=file.path(fore_dir,"mv_projections.rds")) )
   mv_fore   <- mv_fore %>% mutate(BootRun=substring(run,1,3),CatchRun=substring(run,4,7))
   
-# Start projection analyses at first year of new catch advice (ex. 2021=last year in model,2024=first year model will be used to generate catch advice) 
-  mv_fore <- mv_fore %>% filter(year>min(year)+1) 
+# Start projection analyses at first year of new catch advice (ex. 2025=last year in model,2027=first year model will be used to generate catch advice) 
+  mv_fore <- mv_fore %>% filter(year>min(year)) 
   
   mv_fore <- mv_fore %>% mutate(FixedCatch=round(FixedCatch,2)) %>%
                mutate(BootCatchYr=paste0(BootRun,CatchRun,"_",year))
@@ -72,12 +72,14 @@ Z <- mv_fore %>%  group_by(year,FixedCatch) %>%
           filter(FixedCatch<=xmax)
       
 
-P1 <- ggplot(data=Z,aes(x=FixedCatch,y=F_Fmsy,linetype=as.character(year)))+geom_point(size=0.1)+labs(x="Fixed catch (mt)",y="F/Fmsy")+
-  guides(linetype=guide_legend(title="Final year"))+theme_bw()+stat_smooth(col="black",se=F,size=0.5,method="lm",formula=y~poly(x,2,raw=T))+
-  scale_x_continuous(expand=c(0,0))+scale_y_continuous(expand=c(0,0))
+P1 <- ggplot(data=Z,aes(x=FixedCatch,y=F_Fmsy,linetype=as.character(year)))+geom_point(size=0.1)+
+        labs(x="Fixed catch (mt)",y="F/Fmsy")+guides(linetype=guide_legend(title="Final year"))+
+        theme_bw()+stat_smooth(col="black",se=F,linewidth=0.5,method="lm",formula=y~poly(x,2,raw=T))+
+        scale_x_continuous(expand=c(0,0))+scale_y_continuous(expand=c(0,0))
 
-P2 <- ggplot(data=Z,aes(x=FixedCatch,y=SSB_SSBmsst,linetype=as.character(year)))+geom_point(size=0.1)+labs(x="Fixed catch (mt)",y="SSB/SSBmsst")+
-  theme_bw()+theme(legend.position="none")+stat_smooth(col="black",se=F,size=0.5,method="lm",formula=y~poly(x,2,raw=T))
+P2 <- ggplot(data=Z,aes(x=FixedCatch,y=SSB_SSBmsst,linetype=as.character(year)))+geom_point(size=0.1)+
+        labs(x="Fixed catch (mt)",y="SSB/SSBmsst")+theme_bw()+theme(legend.position="none")+
+        stat_smooth(col="black",se=F,linewidth=0.5,method="lm",formula=y~poly(x,2,raw=T))
 
 
 aLegend <- get_legend(P2)
@@ -105,11 +107,11 @@ E <- E %>% mutate(N_overfished=replace(N_overfished,is.na(N_overfished),0)) %>%
   mutate(ProbOverfished=N_overfished/N_tot)
 
 P3 <- ggplot(data=C,aes(x=FixedCatch,y=ProbOverfishing,linetype=as.character(year)))+geom_point(size=0.5)+labs(x="Fixed catch (mt)",y="Prob. F > Fmsy")+
-  theme_bw()+theme(legend.position="none")+geom_smooth(col="black",se=F,size=0.5)+scale_y_continuous(expand=c(0,0),limits=c(0,1))+coord_cartesian(ylim=c(0,0.6))+
+  theme_bw()+theme(legend.position="none")+geom_smooth(col="black",se=F,linewidth=0.5)+scale_y_continuous(expand=c(0,0),limits=c(0,1))+coord_cartesian(ylim=c(0,0.6))+
   scale_x_continuous(limits=c(min(C$FixedCatch),max(C$FixedCatch)),expand=c(0,0))#+geom_point(aes(fill=as.character(year)),size=1,shape=21)
 
 P4 <- ggplot(data=E,aes(x=FixedCatch,y=ProbOverfished,linetype=as.character(year)))+geom_point(size=0.5)+labs(x="Fixed catch (mt)",y="Prob. SSB < SSBmsst")+
-  guides(linetype=guide_legend(title="Final year"))+theme_bw()+geom_smooth(col="black",se=F,size=0.5)+scale_y_continuous(expand=c(0,0),limits=c(0,1))+coord_cartesian(ylim=c(0,0.6))+
+  guides(linetype=guide_legend(title="Final year"))+theme_bw()+geom_smooth(col="black",se=F,linewidth=0.5)+scale_y_continuous(expand=c(0,0),limits=c(0,1))+coord_cartesian(ylim=c(0,0.6))+
   scale_x_continuous(limits=c(min(C$FixedCatch),max(C$FixedCatch)),expand=c(0,0))
 
 aLegend <- get_legend(P4)

@@ -6,7 +6,7 @@ options(gargle_oauth_email = "*@noaa.gov")
 
 Lt     <-vector("list",4) # Species options
 #             Name    M                  Growth             LW             Mat           InitF? R0 prof.  Btarg. SupYer?   SuperYr blocks                        # Projections catch range
-Lt[[1]]<-list("APRU", "SW_Then",         "SW_BBS_BIOS",     "Kamikawa",    "SW_BBS_BIOS", F, c(0.5,1.6), 0.29,    T, list(c(2019,2020),c(2022,2024)),              c(0.5,2,0.2)) 
+Lt[[1]]<-list("APRU", "SW_Then",         "SW_BBS_BIOS",     "Kamikawa",    "SW_BBS_BIOS", F, c(0.5,1.6), 0.29,    T, list(c(2019,2020),c(2022,2024)),              c(2.5,5.5,0.2)) 
 #Lt[[2]]<-list("APVI", "OMalley_Then",    "OMalley2",        "Kamikawa",    "Everson",     F, c(0.6,1.6), 0.29,    T, list(c(2004,2006),c(2010,2012)),             c(1.4,3,0.1)) 
 #Lt[[3]]<-list("CALU", "Fry_Then",        "SW_BBS_BIOS",     "Kamikawa",    "SW_BBS_BIOS", F, c(0.8,1.8), 0.29,    T, list(c(2009,2011),c(2016,2017),c(2018,2020)),c(0.8,2.0,0.1)) 
 Lt[[2]]<-list("ETCO", "Andrews_Then",    "Andrews_Sex",     "Kamikawa",    "Reed",        F, c(0.2,1.6), 0.29,    T, list(c(2018,2020)),                          c(1.5,3,0.1)) 
@@ -24,15 +24,15 @@ for(i in 1:4){
 
 cl    <- makeCluster (4)
 #for(i in 1:length(Lt)){
-#lapply(list(Lt[[1]]),function(x)     { # Run a single model at a time
-parLapply(cl,Lt,function(x){ # Run all models in parallel
+lapply(list(Lt[[1]]),function(x)     { # Run a single model at a time
+#parLapply(cl,Lt,function(x){ # Run all models in parallel
   
   DirName    <- "005_2025_endyr" # Name of directory to create for this model run
-  runmodels  <- T   # Turn off if you want to process results only
+  runmodels  <- F   # Turn off if you want to process results only
   printreport<- F   # Turn off to skip ss_diags report
   Create_species_report_figs <- F # Turn on to produce formatted figures and tables word document. Run after running all r4ss plots and diags
   N_boot     <- 0   # Set to 0 to turn bootstrap off
-  N_foreyrs  <- 0   # Set to 0 to turn forecast off or 7 to run for 7 years
+  N_foreyrs  <- 7   # Set to 0 to turn forecast off or 7 to run for 7 years
   RD         <- F   # Run Diagnostics (jitter, profile, retro)
   ProfRes    <- .1 # R0 profile resolution
   profile    <- "SR_LN(R0)" # string of parameter to profile across
@@ -51,7 +51,7 @@ parLapply(cl,Lt,function(x){ # Run all models in parallel
                startyr       = Begin, endyr = 2025, 
                fleets        = 1, #c(1,2,3), 
                N_samp        = 45,
-               write_files   = T, runmodels = runmodels, ext_args = "",
+               write_files   = F, runmodels = runmodels, ext_args = "",
                do_retro      = RD,retro_years = 0:-5,
                do_profile    = RD,profile = profile,
                profile.vec   = seq(x$R0[1], x$R0[2], ProfRes),

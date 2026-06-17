@@ -1,7 +1,7 @@
 # Install renv for package management
 #install.packages("renv")
 # To install all packages needed: 
-renv::restore()
+#renv::restore()
 
 # If you add code that needs another package use `renv::install()` to install the package (works for CRAN and github packages), then save the metadata to the lockfile using `renv::snapshot()`. Make sure to push changes to the lockfile to the github repo. 
 # It's always good practice to run `renv::restore()` if you have pulled any changes that way you make sure you have the most up-to-date library. 

@@ -3,25 +3,25 @@ library(r4ss)
 root_dir <- this.path::here(.. = 1)
 source(file.path(root_dir,"Scripts","02_SS scripts","01_Build_All_SS.R"))
 
+r4ss:::get_ss3_exe(dir =  "C:/Users/Megumi.Oshima/Documents/2026_AmSam_Bottomfish_Update/SS3 models/PRZO/003_new_catch",version = "v3.30.19.01")
 
-
-scenario <- "003_new_catch"
-Build_All_SS(species = "PRZO",
+scenario <- "005_2025_endyr"
+Build_All_SS(species = "APRU",
     scenario = "base", 
     startyr = 1967,
-    endyr = 2024,
+    endyr = 2025,
     fleets = 1, 
-    M_option = "Schemmel_Then",
-    GROWTH_option = "Schemmel_Sex",
+    M_option = "SW_Then",
+    GROWTH_option = "SW_BBS_BIOS",
     LW_option = "Kamikawa",
-    MAT_option = "Schemmel",
+    MAT_option = "SW_BBS_BIOS",
     SR_option = "FishLife",
     EST_option = "Normal",
     initF = FALSE,
     lambdas = F,
     includeCPUE = TRUE,
     superyear = TRUE,
-    superyear_blocks = list(c(2009,2011),c(2012,2014),c(2015,2016)),
+    superyear_blocks = list(c(2019,2020),c(2022,2024)),
     N_samp = 45,
     init_values = 0, 
     parmtrace = 0,
@@ -50,29 +50,38 @@ Build_All_SS(species = "PRZO",
     retro_years = 0:-5,
     do_profile = FALSE,
     profile = "SR_LN(R0)",
-    profile.vec = seq(8.2, 8.4, .1),
+    profile.vec = c(0.5,1.5),
     do_jitter = FALSE,
-    Njitter = 200,
+    Njitter = 50,
     jitterFraction = 0.1,
     printreport = FALSE,
-    r4ssplots = TRUE,
+    r4ssplots = FALSE,
     readGoogle = TRUE
 )
 
 mods <- SSgetoutput(
-    dirvec = c(file.path(root_dir, "SS3 models", "PRFL", "003_new_catch"), 
-                file.path(root_dir, "SS3 models", "PRFL", "01_Base"))) 
+    dirvec = c(file.path(root_dir, "SS3 models", "PRZO", "004_new_catch_size_cpue"), 
+                file.path(root_dir, "SS3 models", "PRZO", "005_2025_endyr")))
+                file.path(root_dir, "SS3 models", "PRZO", "003_new_catch_size"),
+                file.path(root_dir, "SS3 models", "PRZO", "002_new_catch"),
+                file.path(root_dir, "SS3 models", "PRZO", "01_Base"))) 
 mods_sum <- SSsummarize(mods)
-SSplotComparisons(mods_sum, legendlabels = c("new", "old"))#, 
-print = TRUE, plotdir = file.path(root_dir, "SS3 models", "PRZO", "003_new_catch"))
-
+SSplotComparisons(mods_sum, legendlabels = c("new_catch_size_cpue", "new_catch_size", "new_catch", "old"), 
+print = TRUE, plotdir = file.path(root_dir, "SS3 models", "PRZO", "004_new_catch_size_cpue"))
+dev.off()
 
 mods <- SSgetoutput(
-    dirvec = c(file.path(root_dir, "SS3 models", "PRFL", "003_new_cpue_2"), 
-                file.path(root_dir, "SS3 models", "PRFL", "01_Base"))) 
+    dirvec = c(file.path(root_dir, "SS3 models", "APRU", "005_2025_endyr"), 
+                file.path(root_dir, "SS3 models", "APRU", "004_new_catch_size_cpue"))) 
 mods_sum <- SSsummarize(mods)
 SSplotComparisons(mods_sum)
 
 mods_sum$indices %>%
 ggplot(aes(x = Yr, y = Obs)) +
 geom_point(aes(color = name)) 
+
+
+retros <- retro(dir=file.path(root_dir, "SS3 models", "APRU", "002_new_catch"), 
+               oldsubdir="", newsubdir="Retrospectives", years=0:-1, exe = "ss_opt_win.exe")
+
+check_exe(exe = "ss_opt_win", dir  = file.path(root_dir, "SS3 models", "APRU", "002_new_catch"))
