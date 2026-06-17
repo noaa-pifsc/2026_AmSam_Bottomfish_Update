@@ -1,5 +1,6 @@
 ## About
-This repository contains the code and models used for the 2023 American Samoa BMUS Stock Assessment. 
+This repository contains the code and models used for the 2026 American Samoa BMUS Stock Assessment Update. 
+
 
 ## Repository Structure
 The folder structure is as follows: 
