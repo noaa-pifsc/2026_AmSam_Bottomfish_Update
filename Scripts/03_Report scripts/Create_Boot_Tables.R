@@ -9,7 +9,10 @@ Create_Boot_Tables <- function(root_dir,model_dir){
   SS.results <- r4ss::SS_output(model_dir,verbose = FALSE, printstats = FALSE)
   PAR        <- data.table( SS.results$parameters )
 
-  # Catch data to calculate catch 2019-2022
+  # Get the final year of the model (i.e. with data) for statistics
+  ENDYR <- SS.results$endyr
+  
+  # Catch data to calculate mean catch in the last 3 years of the model
   C <- SS.results$catch %>% select(Yr,Obs,LOGSD.MT=se)
   
   TBIO          <- data.table(YEAR=SS.results$timeseries$Yr,ERA=SS.results$timeseries$Era,TOT_BIO=SS.results$timeseries$Bio_all)
@@ -22,9 +25,11 @@ Create_Boot_Tables <- function(root_dir,model_dir){
   SPR.MSY <- QT[str_detect(QT$Label,"SPR.MSY")][,2:3]
   SPR.MSY <- data.table(SPR.MSY.50=SPR.MSY$Value,SPR.MSY.05=SPR.MSY$Value-SPR.MSY$StdDev*1.96,SPR.MSY.95=SPR.MSY$Value+SPR.MSY$StdDev*1.96)
   
-  SPR2021 <- as.numeric(QT[str_detect(QT$Label,"SPRratio_2021")][,2:3])
-  SPR2021 <- data.table(SPR2021.50=SPR2021[1],SPR2021.05=SPR2021[1]+SPR2021[2]*1.96,SPR2021.95=SPR2021[1]-SPR2021[2]*1.96)
-  SPR2021 <- 1-SPR2021
+  SPR_FINAL_YR_STRING <- paste0("SPRratio_",ENDYR)
+  
+  SPR_FINAL_YR <- as.numeric(QT[str_detect(QT$Label,SPR_FINAL_YR_STRING)][,2:3])
+  SPR_FINAL_YR <- data.table(SPR_FINAL_YR.50=SPR_FINAL_YR[1],SPR_FINAL_YR.05=SPR_FINAL_YR[1]+SPR_FINAL_YR[2]*1.96,SPR_FINAL_YR.95=SPR_FINAL_YR[1]-SPR_FINAL_YR[2]*1.96)
+  SPR_FINAL_YR <- 1-SPR_FINAL_YR
   
   # Get the bootstrapped results
   SS <- readRDS(file.path(boot_dir,"mvln_draws.rds"))
@@ -67,21 +72,21 @@ Create_Boot_Tables <- function(root_dir,model_dir){
   
 
 # Reference points
-RP <- data.table(REF_POINT=c("Fmsy","F2021","F2021/Fmsy","SSBmsst","SSB2021","SSB2021/SSBmsst",
-                             "MSY","Catch2019-2021","SPRmsy","SPR2021"),MEDIAN=0,L95=0,U95=0)
+RP <- data.table(REF_POINT=c("Fmsy",paste0("F",ENDYR),paste0("F",ENDYR,"/Fmsy"),"SSBmsst",paste0("SSB",ENDYR),paste0("SSB",ENDYR,"/SSBmsst"),
+                             "MSY",paste0("Catch_",ENDYR-2,"-",ENDYR),"SPRmsy",paste0("SPR_",ENDYR)),MEDIAN=0,L95=0,U95=0)
 
 RP[1,2:4] <- SS %>% summarize(FMSY.50=median(FMSY),FMSY.05=quantile(FMSY,0.05),FMSY.95=quantile(FMSY,0.95))
-RP[2,2:4] <- TS %>% filter(YEAR==2021) %>% select(FMORT.50,FMORT.05,FMORT.95)
+RP[2,2:4] <- TS %>% filter(YEAR==ENDYR) %>% select(FMORT.50,FMORT.05,FMORT.95)
 RP[3,2:4] <- data.frame( RP[2]$MEDIAN/RP[1]$MEDIAN,RP[2]$L95/RP[1]$L95,RP[2]$U95/RP[1]$U95 )
 RP[4,2:4] <- SS %>% summarize(BMSST.50=median(BMSST),BMSST.05=quantile(BMSST,0.05),BMSST.95=quantile(BMSST,0.95))
-RP[5,2:4] <- TS %>% filter(YEAR==2021) %>% select(SSB.50,SSB.05,SSB.95)
-RP[6,2:4] <- TS %>% filter(YEAR==2021) %>% select(B_BMSST.50,B_BMSST.05,B_BMSST.95)
+RP[5,2:4] <- TS %>% filter(YEAR==ENDYR) %>% select(SSB.50,SSB.05,SSB.95)
+RP[6,2:4] <- TS %>% filter(YEAR==ENDYR) %>% select(B_BMSST.50,B_BMSST.05,B_BMSST.95)
 RP[7,2:4] <- MSY
-RP[8,2]   <- C %>% filter(Yr>=2019&Yr<=2021) %>% summarize(Catch=sum(Obs)/3) 
-RP[8,3]   <- C %>% filter(Yr>=2019&Yr<=2021) %>% summarize(L95=RP[8]$MEDIAN-sum(RP[8]$MEDIAN*LOGSD.MT)/3*1.96)
-RP[8,4]   <- C %>% filter(Yr>=2019&Yr<=2021) %>% summarize(L95=RP[8]$MEDIAN+sum(RP[8]$MEDIAN*LOGSD.MT)/3*1.96)
+RP[8,2]   <- C %>% filter(Yr>=(ENDYR-2)&Yr<=ENDYR) %>% summarize(Catch=sum(Obs)/3) 
+RP[8,3]   <- C %>% filter(Yr>=(ENDYR-2)&Yr<=ENDYR) %>% summarize(L95=RP[8]$MEDIAN-sum(RP[8]$MEDIAN*LOGSD.MT)/3*1.96)
+RP[8,4]   <- C %>% filter(Yr>=(ENDYR-2)&Yr<=ENDYR) %>% summarize(L95=RP[8]$MEDIAN+sum(RP[8]$MEDIAN*LOGSD.MT)/3*1.96)
 RP[9,2:4] <- SPR.MSY
-RP[10,2:4]<- SPR2021
+RP[10,2:4]<- SPR_FINAL_YR
   
   
 # Round values

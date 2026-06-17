@@ -11,6 +11,7 @@ options(scipen = 999)
 d <- readr::read_rds(file.path(root_dir, "Data", "a_catch_bbs.rds"))
 d <- d %>% filter(DATA_YEAR > 2021)
 d <- as.data.table(d)
+
 # Add more species info
 S                 <- data.table(  read.xlsx(paste0(root_dir, "/Data/METADATA.xlsx"),sheet="ALLSPECIES")   )
 S                 <- select(S,SPECIES_PK,SCIENTIFIC_NAME,FAMILY)
@@ -22,7 +23,7 @@ d                 <- merge(d,S,by.x="SPECIES_FK",by.y="SPECIES_PK")
 # follow Toby's instructions to break the unique key SPC_PK into the interview details we need
 d <- mutate(d,YEAR = as.numeric(DATA_YEAR), METHOD = METHOD_FK, 
                    ZONE = ISLAND, TYPE = TYPE_OF_DAY, 
-                   CHARTER = substr(EXP_FK,17,17), PROCESS = substr(EXP_FK,18,18))
+                   CHARTER = substr(exp_fk,17,17), PROCESS = substr(exp_fk,18,18))
 
 #d[is.na(VAR_LBS_CAUGHT)]$VAR_LBS_CAUGHT <- 0 # IS this necessary? Does it have an impact? 
 
@@ -63,7 +64,12 @@ d <- d[METHOD=="4"|METHOD=="5"|METHOD=="6"|METHOD=="8"|METHOD=="61"]
 #summing the lbs caught and variance of the lbs caught by year-area-fishing method-species combination
 d <- d[,list(LBS_CAUGHT=sum(LBS_CAUGHT),VAR_LBS_CAUGHT=sum(VAR_LBS_CAUGHT)),by=list(YEAR,ZONE,METHOD,SPECIES_FK)]
 
+# NOTE: 2022 does not have data for Tutuila for species 245, while Manua does. To prevent an error,
+# let's fill the 2022 catch with the previous year's catch (0.011 mt or 24 pounds).
 
+d <- d %>% add_row(YEAR=2022,ZONE="Tutuila",SPECIES_FK="S245",METHOD=5,
+                   LBS_CAUGHT=24,VAR_LBS_CAUGHT=100)
+  
 # missing_rows <- anti_join(D, d) #5084 rows in D that aren't in d
 # missing_rows %>% filter(SPECIES_FK %in% bmus_fk) %>% group_by(SPECIES_FK) %>% 
 # summarise(tot_lbs = sum(LBS_CAUGHT)) %>% arrange(desc(tot_lbs)) #missing catch for bmus species is ~90000 - ~5700 lbs

@@ -7,13 +7,13 @@ Run_Forecasts <- function(model_dir, N_foreyrs, FixedCatchSeq, endyr, SavedCores
   
   
   # COMMENT OUT THIS LINE
-  #  root_dir      <- root_dir <- here(..=2); set.seed(123)
-  #  model_dir     <- file.path(root_dir,"SS3 models","VALO","50_BOOT10")
-  #  fore_dir <- file.path(model_dir,"forecast")
-  #  FixedCatchSeq <- c(0.6,1.4,0.1)
+  # root_dir      <- root_dir <- here(..=2); set.seed(123)
+  #  model_dir     <- file.path(root_dir,"SS3 models","ETCO","06_Base_Final")
+ #  fore_dir       <- file.path(model_dir,"forecast")
+ #  FixedCatchSeq <- c(1.5,3,0.1)
   #  FixedCatchVec  <- seq(FixedCatchSeq[1],FixedCatchSeq[2],FixedCatchSeq[3])
-  # N_ForeCatch    <- length(FixedCatchVec)
-  # COMMENT OUT ABOVE  
+ #   N_ForeCatch    <- length(FixedCatchVec)
+   #COMMENT OUT ABOVE  
     
   require(data.table);  require(tidyverse); require(r4ss)
     
@@ -96,7 +96,7 @@ Run_Forecasts <- function(model_dir, N_foreyrs, FixedCatchSeq, endyr, SavedCores
         # Copy the relevant bootstrapped data files to the temp_dir
         file.copy(list.files(fore_dir,pattern=paste0("data_boot_",str_pad(iboot,3,pad="0"),".ss"),full.names=T),to=temp_dir)
         
-        # Obtain bootstrapped catch between 2019-2021 to use for projected catches in 2022 and 2023 (new ACLs starts in 2024)
+        # Obtain bootstrapped catch between 2023-2025 to use for projected catches in 2026 (new ACLs starts in 2027)
         aDat           <- SS_readdat_3.30(file = file.path(temp_dir, paste0("data_boot_", str_pad(iboot,3,pad="0"), ".ss")))
         aCatch         <- aDat$catch
         aCatch_Last3yr <- aCatch %>% filter(year>=max(year)-2) %>% summarize(Catch=mean(catch)) %>% as.numeric()
@@ -107,7 +107,7 @@ Run_Forecasts <- function(model_dir, N_foreyrs, FixedCatchSeq, endyr, SavedCores
         # Modify the forecast to include a new Fixed Catch to use in the projections
         forecast.file$Forecast <- 2
         forecast.file$Nforecastyrs <- N_foreyrs
-        forecast.file$ForeCatch    <- data.frame(Year = seq(endyr+1, endyr + N_foreyrs, by = 1),
+        forecast.file$ForeCatch    <- data.frame(Year = seq(from=endyr+1, to=endyr + N_foreyrs, by = 1),
                                          Season = 1, 
                                          Fleet = 1,
                                          Catch = c(rep(aCatch_Last3yr,times=1),rep(aFixedCatch,times=N_foreyrs-1))) 
@@ -146,6 +146,25 @@ Run_Forecasts <- function(model_dir, N_foreyrs, FixedCatchSeq, endyr, SavedCores
   # This it the normal way of combining models into a list. It was giving me errors when trying to load a lot of models (>100)
   #  models <- SSgetoutput(keyvec = paste0("_",model.info[150:200]$model.names), 
   #                     dirvec = file.path(fore_dir), verbose = T)
+  
+  
+  # For some computers, running the above steps where models are run in parallel, causes
+  # some models not to run. However, the folders have all the necessary files.
+  # We just need to check all the model folders for a report.sso file, and run the model
+  # if absent. Note: check if the issue is Google Drive syncing being turned on.
+  
+  for(i in 1:nrow(model.info)){
+    
+    aFolder <- fs::path(fore_dir,model.info[i])
+    
+    if(!fs::file_exists(fs::path(aFolder,"Report.sso"))){
+      
+      r4ss::run(dir = aFolder, exe = "ss_opt_win.exe", skipfinished = F)
+      
+    cat("A model did not originally run, but was run seperately.")
+    }
+  }
+
   
   models <- list()
   for(i in 1:nrow(model.info)){

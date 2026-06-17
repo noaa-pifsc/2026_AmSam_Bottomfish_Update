@@ -98,17 +98,13 @@ Z %>% filter(YEAR %in% c(2020, 2021, 2022)) %>%
 filter(SPECIES == "ETCO") %>% 
 summarise(mean_C = mean(MT), mean_sd = mean(LOGSD.MT))
 
-Z %>% filter(YEAR %in% c(2019, 2020, 2021)) %>% 
-filter(SPECIES == "PRZO") %>% 
-summarise(mean_C = mean(MT), mean_sd = mean(LOGSD.MT))
-
 # filling in missing years with mean of the last 3 years before missing year catch 
 # bc the mean seemed more representative of catches before and after vs just the 
 # previous year before.
-missing_catches <- data.frame(YEAR = c(2023, 2022), 
-SPECIES = c("ETCO", "PRZO"), 
-MT = c(0.267,0.0427), #values hard coded from lines above
-LOGSD.MT = c(0.45,0.38)) #values hard coded from lines above
+missing_catches <- data.frame(YEAR = c(2023), 
+SPECIES = c("ETCO"), 
+MT = c(0.267), #values hard coded from lines above
+LOGSD.MT = c(0.45)) #values hard coded from lines above
 
 Z <- Z %>% bind_rows(missing_catches) %>% 
 arrange(SPECIES, YEAR)

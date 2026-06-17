@@ -140,9 +140,11 @@ Build_All_SS <- function(species,
  
   ## Step 3. Create other inputs ###---------------------------------------------------
   ### Create subdirectory
-  if(!dir.exists(file.path(root_dir, "SS3 models", species, file_dir))){
-    dir.create(file.path(root_dir, "SS3 models", species, file_dir), showWarnings = F)
-  }
+  #if(!dir.exists(file.path(root_dir, "SS3 models", species, file_dir))){
+  #  dir.create(file.path(root_dir, "SS3 models", species, file_dir), showWarnings = F)
+  #}
+  
+  fs::dir_create(fs::path(root_dir,"SS3 models",species,file_dir))
   
   ## Create text file with notes from CTL_params sheet for reference
   sink(file.path(root_dir, "SS3 models", species, file_dir,"model_options.txt"))
@@ -196,7 +198,7 @@ Build_All_SS <- function(species,
                              pattern = species,
                              full.names = TRUE)
     if(Nfleets == 1){
-      cpue_files <- cpue_files[str_detect(cpue_files, "2016_2024")]
+      cpue_files <- cpue_files[str_detect(cpue_files, "2016_2025")]
     }
     cpue.list <- lapply(cpue_files, function(i){read.csv(i)})
     time.period <- unlist(str_extract_all(cpue_files, 
