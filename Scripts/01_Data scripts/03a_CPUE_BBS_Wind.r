@@ -1,7 +1,7 @@
 #  --------------------------------------------------------------------------------------------------------------
 #   AMERICAN SAMOA BOTTOMFISHES
 #   Erin Bohaboy erin.bohaboy@noaa.gov
-#	UPDATE OCTOBER 2021
+#	UPDATE December 2025
 #	Fetch ocean winds data from NOAA Ocean Watch Central Pacific ERDDAP server
 #	originally used monthly values, but switching to daily values because the monthly product stopped in 2019
 #	https://oceanwatch.pifsc.noaa.gov/erddap/griddap/ccmp-daily-v2-0.html (1988-2018)
@@ -27,7 +27,7 @@
 #  use version 2.1 (2.0 is deprecated) for 2019+
 
 # -------------   accessed Mar24, 2022 to include all of 2021
-#  modified end date for 2019-2021 griddap request below, re-run these next # lines and everything after.
+#  modified end date for 2019-2025 griddap request below, re-run these next # lines and everything after.
 
 	# systime_i <- Sys.time()
 	# GET('https://oceanwatch.pifsc.noaa.gov/erddap/griddap/ccmp-daily-v2-1-NRT.nc?uwnd%5B(2019-01-01):1:(2025-01-25T18:00:00Z)%5D%5B(-15):1:(-13.5)%5D%5B(189):1:(191)%5D,vwnd%5B(2019-01-01):1:(2025-01-25T18:00:00Z)%5D%5B(-15):1:(-13.5)%5D%5B(189):1:(191)%5D,nobs%5B(2019-01-01):1:(2025-01-25T18:00:00Z)%5D%5B(-15):1:(-13.5)%5D%5B(189):1:(191)%5D',
@@ -35,7 +35,7 @@
 	# systime_f <- Sys.time()
 	# systime_f - systime_i
 
-		nc    <- nc_open(paste0(root_dir,"/Data/Winds/winds_recent.nc"))
+	nc    <- nc_open(paste0(root_dir,"/Data/Winds/winds_recent.nc"))
     uwnd  <- ncvar_get(nc,nc$var[[1]])
     v1    <- nc$var[[1]]
     vwnd  <- ncvar_get(nc,nc$var[[2]])
