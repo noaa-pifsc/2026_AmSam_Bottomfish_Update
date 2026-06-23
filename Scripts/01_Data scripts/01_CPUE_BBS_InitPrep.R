@@ -1,12 +1,12 @@
 #  --------------------------------------------------------------------------------------------------------------
-#   AMERICAN SAMOA BOTTOMFISH - INITIAL DATA HANDLING 00_download_data_MO.R
+#   AMERICAN SAMOA BOTTOMFISH - INITIAL DATA HANDLING 00_download_data.R
 #	Data preparation for BOAT BASED creel survey: 
 #   *** data updated 12/16/25 with data directly queried through MySQL
-#	    should be ALL interviews, all gears, all years, all species, etc., through 2024
+#	    should be ALL interviews, all gears, all years, all species, etc., from 2022 - 2024
 #	Original code written by Erin Bohaboy
 #  modified by Marc Nadon marc.nadon@noaa.gov 
 #  updated by Meg Oshima megumi.oshima@noaa.gov for 2026 update assessment
-#		includes some code written by John Syslo for the 2019 assessment
+#	 includes some code written by John Syslo for the 2019 assessment
 #  --------------------------------------------------------------------------------------------------------------
 
 #  PRELIMINARIES
@@ -152,9 +152,6 @@
 # However, it seems most likely that P. rutilans was actually P. flavipinnis, given they share the local name "palu sina" 
 #	Fishermen workshops confirmed the name Palu-sina for P. flavipinnis, we concluded 'P. rutilans' (SPECIES_PK 243) is P. flavipinnis 
 # Replace SPECIES_FK 243 (Pristipomoides rutilans) with 241 (Pristipomoides flavipinnis)
-   # pfl.intpk <- A[SPECIES_FK==243]$INTERVIEW_PK
-   # pfl.catpk <- A[SPECIES_FK==243]$CATCH_PK
-   # save(list = c("pfl.intpk", "pfl.catpk"), file = file.path(root_dir, "Data", "pfl_pk.RDS"))
    
    A[SPECIES_FK==243]$SCIENTIFIC_NAME <- "Pristipomoides flavipinnis"
    A[SPECIES_FK==243]$SPECIES_FK      <- 241
@@ -225,6 +222,7 @@ for (i in 1:length(CATCH_PK.list)){
   }
 }	
 
+# QA/QC checks
 # View(B[INTERVIEW_PK=="20817184804"])
 #Test <- B[,list(EST_LBS=max(EST_LBS)),by=list(YEAR,INTERVIEW_PK,CATCH_PK,SPECIES_FK2,SCIENTIFIC_NAME)]
 #Test <- Test[YEAR<=2015&(SPECIES_FK2=="220"|SPECIES_FK2=="229"),list(EST_LBS=sum(EST_LBS)),by=list(SPECIES_FK2)]
@@ -257,6 +255,7 @@ for (i in 1:length(CATCH_PK.list)){
   }
 }	
 
+# QA/QC checks
 # View(B[INTERVIEW_PK=="100603101305"])
 # Test <- B[,list(EST_LBS=max(EST_LBS)),by=list(YEAR,INTERVIEW_PK,CATCH_PK,SPECIES_FK2,SCIENTIFIC_NAME)]
 # Test <- Test[(YEAR>=2010&YEAR<=2015)&(SPECIES_FK2=="241"|SPECIES_FK2=="242"),list(EST_LBS=sum(EST_LBS)),by=list(SPECIES_FK2)]
@@ -299,6 +298,7 @@ for (i in 1:length(CATCH_PK.list)){
   }
 }	
 
+# QA/QC checks
 # Test <- B[,list(EST_LBS=max(EST_LBS)),by=list(YEAR,AREA_C,INTERVIEW_PK,CATCH_PK,FAMILY,SPECIES_FK2,SCIENTIFIC_NAME)]
 # Test <- Test[AREA_C=="Manua"&FAMILY=="Lethrinidae",list(EST_LBS=sum(EST_LBS)),by=list(SPECIES_FK2)]
 # Prop.Rub; Test[SPECIES_FK2=="267"]$EST_LBS/sum(Test$EST_LBS)
@@ -328,13 +328,13 @@ B <- B[,list(EST_LBS=sum(EST_LBS)),by=list(INTERVIEW_PK,CATCH_PK,AREA_C,YEAR,SEA
 
 B <- B[order(SAMPLE_DATE,INTERVIEW_TIME_LOCAL,INTERVIEW_PK)]
 
-# save in nullfile()# save in the output folder.
 length(unique(B[YEAR>=2016]$INTERVIEW_PK)) #399 #update 488, only added 89 interviews
 length(unique(B[METHOD_FK==4&YEAR>=2016]$INTERVIEW_PK)) #295 #update 365
 length(unique(B[METHOD_FK==5&YEAR>=2016]$INTERVIEW_PK)) #104 #update 123
 
 length(unique(B[YEAR>=2016&METHOD_FK=="4"]$INTERVIEW_PK))
 
+# save in the output folder.
 saveRDS(B,file=paste0(root_dir,"/Outputs/CPUE_A.rds"))
 
 
