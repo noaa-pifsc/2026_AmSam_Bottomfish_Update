@@ -4,29 +4,24 @@ root_dir <- this.path::here(.. = 2)
 options(scipen = 999)
 
 D <- fread(paste0(root_dir, "/Data/2023_data/AS_BBS_SPC_correctLog2.csv"), stringsAsFactors=FALSE) 
-# d <- readr::read_rds(file.path(root_dir, "Data", "a_catch_bbs.rds"))
-# d <- d %>% filter(DATA_YEAR > 2021)
+# read in new data (2022-2025) and do some tidying to get it to match old data
+d <- readr::read_rds(file.path(root_dir, "Data", "a_catch_bbs.rds"))
+d <- d %>% filter(DATA_YEAR > 2021)
+d <- as.data.table(d)
+
 # Add more species info
 S                 <- data.table(  read.xlsx(paste0(root_dir, "/Data/METADATA.xlsx"),sheet="ALLSPECIES")   )
 S                 <- select(S,SPECIES_PK,SCIENTIFIC_NAME,FAMILY)
 S$SPECIES_PK      <- paste0("S",S$SPECIES_PK) 
+d$SPECIES_FK      <- paste0("S",d$SPECIES_FK) 
+d                 <- merge(d,S,by.x="SPECIES_FK",by.y="SPECIES_PK")
 D$SPECIES_FK      <- paste0("S",D$SPECIES_FK) 
 D                 <- merge(D,S,by.x="SPECIES_FK",by.y="SPECIES_PK")
-
 
 # follow Toby's instructions to break the unique key SPC_PK into the interview details we need
 D <- mutate(D,YEAR = as.numeric(substr(SPC_PK,2,5)), METHOD = substr(SPC_PK,11,11), 
                    ZONE = substr(SPC_PK,14,14), TYPE = substr(SPC_PK,20,21), 
                    CHARTER = substr(SPC_PK,22,22), PROCESS = substr(SPC_PK,23,23))
-
-D[is.na(VAR_LBS_CAUGHT)]$VAR_LBS_CAUGHT <- 0 # IS this necessary? Does it have an impact? 
-
-D[ZONE=='1']$ZONE<-'Tutuila'			# note banks trips are included in Tutuila expansion
-D[ZONE=='2']$ZONE<-'Manua'
-
-
-D[SPECIES_FK=="S109"]$SPECIES_FK <- "S110" # Merge Trevallies and Jacks
-D[SPECIES_FK=="S380"]$SPECIES_FK <- "S210" # Merge Inshore groupers and groupers
 
 #  Note:
 #		Method	4 = bottomfishing, 5 = btm/trl mix
@@ -34,6 +29,20 @@ D[SPECIES_FK=="S380"]$SPECIES_FK <- "S210" # Merge Inshore groupers and groupers
 #		Type	WD = weekday, WE = weekend
 #		Charter	C = yes, N = no
 #		Process	G = Tutuila, M = Manua
+
+# match column names to older data
+d <- mutate(d,YEAR = as.numeric(DATA_YEAR), METHOD = METHOD_FK, 
+                   ZONE = ISLAND, TYPE = TYPE_OF_DAY, 
+                   CHARTER = substr(EXP_FK,17,17), PROCESS = substr(EXP_FK,18,18))
+
+D[is.na(VAR_LBS_CAUGHT)]$VAR_LBS_CAUGHT <- 0  
+
+D[ZONE=='1']$ZONE<-'Tutuila'			# note banks trips are included in Tutuila expansion
+D[ZONE=='2']$ZONE<-'Manua'
+d$ZONE <- gsub("'", "", d$ZONE) # zone recorded differently for new data
+
+D[SPECIES_FK=="S109"]$SPECIES_FK <- "S110" # Merge Trevallies and Jacks
+D[SPECIES_FK=="S380"]$SPECIES_FK <- "S210" # Merge Inshore groupers and groupers
 
 # ---- per Hongguang / Toby:
 #	LBS_CAUGHT is the expanded landings, in lbs, and VAR_LBS_CAUGHT is the estimated variance of expanded landings (sigma^2).
@@ -50,10 +59,15 @@ D[SPECIES_FK=="S243"]$SPECIES_FK<-"S241"
 #		just to be complete.
 
 D <- D[METHOD=="4"|METHOD=="5"|METHOD=="6"|METHOD=="8"|METHOD=="61"]
+d <- d[METHOD=="4"|METHOD=="5"|METHOD=="6"|METHOD=="8"|METHOD=="61"]
 
 # Select only necessary columns
 #summing the lbs caught and variance of the lbs caught by year-area-fishing method-species combination
 D <- D[,list(LBS_CAUGHT=sum(LBS_CAUGHT),VAR_LBS_CAUGHT=sum(VAR_LBS_CAUGHT)),by=list(YEAR,ZONE,METHOD,SPECIES_FK)]
+d <- d[,list(LBS_CAUGHT=sum(LBS_CAUGHT),VAR_LBS_CAUGHT=sum(VAR_LBS_CAUGHT)),by=list(YEAR,ZONE,METHOD,SPECIES_FK)]
+
+# Add new data to old data
+D <- rbind(D, d)
 
 #==================Fix Variola louti (229) and V. albimarginata (220) issue (species IDed together from 1986 to 2015)======================
 D[YEAR<=2015&(SPECIES_FK=="S229"|SPECIES_FK=="S220")]$SPECIES_FK <- "S99999" # Assign all records to a dummy species code (for now)
@@ -150,15 +164,29 @@ D$SPECIES_FK <- as.character(D$SPECIES_FK)
 
 #======================Break down taxonomic groups into species components using proportion table from 03_BBS_proptables.R===============================
 
-PT            <- readRDS(paste0(root_dir, "/Data/2023_outputs/BBS_Prop_Table.rds"))  # Species composition of groups, by group x period x region
+PT            <- readRDS(paste0(root_dir, "/Outputs/BBS_Prop_Table.rds"))  # Species composition of groups, by group x period x region
 PT$GROUP_FK   <- paste0("S",PT$GROUP_FK)
 PT$SPECIES_FK <- paste0("S",PT$SPECIES_FK)
 
-D$PERIOD <- 999 # Add time period that matches the one used for prop table (PT)
-D[YEAR>1985&YEAR<=1995]$PERIOD  <- 1995
-D[YEAR>1995&YEAR<=2005]$PERIOD  <- 2005
-D[YEAR>2005&YEAR<=2015]$PERIOD  <- 2015
-D[YEAR>2015&YEAR<=2025]$PERIOD  <- 2025
+# Define the time PERIOD used to calculate species proportions
+# 1. Find the maximum year in your dataset
+max_year <- max(D$YEAR, na.rm = TRUE)
+
+# 2. Generate the sequence of breaks starting from 1985 up to (and slightly past) the max year
+# We use ceiling to ensure the last bucket always spans a full 10-year increment
+upper_bound <- 1985 + 10 * ceiling((max_year - 1985) / 10)
+breaks <- seq(1985, upper_bound, by = 10)
+
+# 3. Create the labels based on the upper boundary of each period
+labels <- breaks[-1]
+
+# 4. Assign the periods dynamically
+D[, PERIOD := as.numeric(as.character(
+  cut(YEAR, breaks = breaks, labels = labels, include.lowest = FALSE)
+))]
+
+# 5. Handle your default/fallback value for years 1985 and below
+D[is.na(PERIOD) | YEAR <= 1985, PERIOD := 999]
 
 X            <- D[SPECIES_FK=="S109"|SPECIES_FK=="S110"|SPECIES_FK=="S200"|SPECIES_FK=="S210"|SPECIES_FK=="S230"|SPECIES_FK=="S240"|SPECIES_FK=="S260"|SPECIES_FK=="S380"|SPECIES_FK=="S390"]
 
@@ -211,7 +239,7 @@ ggplot(data=test3[SPECIES_FK=="S229"])+geom_line(aes(x=YEAR,y=LBS_CAUGHT),col="b
 G <- Z[BMUS=="T",list(LBS_CAUGHT=sum(LBS_CAUGHT),VAR_LBS_CAUGHT=sum(VAR_LBS_CAUGHT)),by=list(SPECIES_FK,ZONE,YEAR)]
 G <- G[order(SPECIES_FK,ZONE,YEAR)]
 
-saveRDS(G, file = file.path(root_dir, "/Outputs/CATCH_BBS_G_Old.rds"))
+#saveRDS(G, file = file.path(root_dir, "/Outputs/CATCH_BBS_G_Old.rds"))
 
 # Explore the Catch by Year and Area
 #EX <- merge(G,S,by.x="SPECIES_FK",by.y="SPECIES_PK")
@@ -261,28 +289,21 @@ Results$KEEP <- ifelse(Results$PVALUE<=0.05,1,0)
 
 # Add 2009-2021 Manua catch based on regression results above.
 COEF <- select(Results[KEEP==1],SPECIES_FK,COEF)
-saveRDS(COEF, file = file.path(root_dir, "/Outputs/CATCH_BBS_COEF_Manua.rds"))
-saveRDS(E, file = file.path(root_dir, "/Outputs/CATCH_BBS_E_Old.rds"))
-#stop here and rbind with new e dataframe 
-#E    <- merge(E,COEF,by="SPECIES_FK")
+E    <- merge(E,COEF,by="SPECIES_FK")
 
-#Do the remainder of this in 06_CATCH_BBS_FinalPrep_new.r
 # Calculate 2009-2021 Manua catch based on Tutuila catch
-# E[YEAR>=2009]$Manua <- E[YEAR>=2009]$Tutuila*E[YEAR>=2009]$COEF
-# E                   <- select(E[YEAR>=2009],YEAR,SPECIES_FK,LBS_CAUGHT=Manua,)
-# E$VAR_LBS_CAUGHT    <- 0 # Set to 0 for now
-# E$ZONE              <- "Manua"
+E[YEAR>=2009]$Manua <- E[YEAR>=2009]$Tutuila*E[YEAR>=2009]$COEF
+E                   <- select(E[YEAR>=2009],YEAR,SPECIES_FK,LBS_CAUGHT=Manua,)
+E$VAR_LBS_CAUGHT    <- 0 # Set to 0 for now
+E$ZONE              <- "Manua"
 
-# # Put back together
-# G <- G[!(ZONE=="Manua"&YEAR>=2009)] # Remove old Manua catch
-# G <- rbind(G,E)  
+# Put back together
+G <- G[!(ZONE=="Manua"&YEAR>=2009)] # Remove old Manua catch
+GE <- rbind(G,E)  
 
-# # Save final boat-based catch file
-
-# G$SOURCE <- "BBS"
-# G$SD.LBS <- sqrt(G$VAR_LBS_CAUGHT)
-# G        <- select(G,SOURCE,SPECIES_FK,YEAR,AREA_C=ZONE,LBS=LBS_CAUGHT,SD.LBS)
-# saveRDS(G,file=paste0(root_dir, "/Outputs/2023_outputs/CATCH_BBS_A.rds"))
-
-
+# Save final boat-based catch file
+GE$SOURCE <- "BBS"
+GE$SD.LBS <- sqrt(GE$VAR_LBS_CAUGHT)
+GE        <- select(GE,SOURCE,SPECIES_FK,YEAR,AREA_C=ZONE,LBS=LBS_CAUGHT,SD.LBS)
+saveRDS(GE,file=paste0(root_dir, "/Outputs/CATCH_BBS_A.rds"))
 
