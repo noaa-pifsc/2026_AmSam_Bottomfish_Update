@@ -24,7 +24,7 @@ Z[SPECIES_FK==380]$SPECIES_FK <- 210 # Merge Inshore groupers and groupers
 
 # Define the time PERIOD used to calculate species proportions
 Z$PERIOD <- 999
-Z[YEAR>1985&YEAR<=1995]$PERIOD <- 1995
+Z[YEAR>1985&YEAR<=1995]$PERIOD  <- 1995
 Z[YEAR>1995&YEAR<=2005]$PERIOD  <- 2005
 Z[YEAR>2005&YEAR<=2015]$PERIOD  <- 2015
 Z[YEAR>2015&YEAR<=2025]$PERIOD  <- 2025
