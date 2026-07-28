@@ -6,6 +6,7 @@ options(scipen = 999)
 D <- fread(paste0(root_dir, "/Data/2023_data/AS_BBS_SPC_correctLog2.csv"), stringsAsFactors=FALSE) 
 # d <- readr::read_rds(file.path(root_dir, "Data", "a_catch_bbs.rds"))
 # d <- d %>% filter(DATA_YEAR > 2021)
+
 # Add more species info
 S                 <- data.table(  read.xlsx(paste0(root_dir, "/Data/METADATA.xlsx"),sheet="ALLSPECIES")   )
 S                 <- select(S,SPECIES_PK,SCIENTIFIC_NAME,FAMILY)
