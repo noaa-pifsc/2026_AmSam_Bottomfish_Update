@@ -25,7 +25,8 @@
    aint_bbs3 <- fread(paste0(root_dir, "/Data/2023_data/a_bbs_int_flat3.csv"), header=T, stringsAsFactors=FALSE) 			
    aint_bbs4 <- fread(paste0(root_dir, "/Data/2023_data/a_bbs_int_flat4.csv"), header=T, stringsAsFactors=FALSE)
    aint_bbs5 <- fread(paste0(root_dir, "/Data/2023_data/PICDR-113220 BB Creel Data_all_columns.csv"), header=T, stringsAsFactors=FALSE)
-   #New data up to 2024
+  
+   #New data up to 2025
    aint_bbs6 <- readr::read_rds(fs::path(root_dir, "Data", "a_interview_bbs.rds"))
    aint_bbs6 <- as.data.table(aint_bbs6)
    
@@ -40,14 +41,17 @@
    aint_bbs6$YEAR <- year(aint_bbs6$SAMPLE_DATE)
    aint_bbs6 <- aint_bbs6[YEAR > 2021]
    aint_bbs6 <- select(aint_bbs6, -YEAR)
-   # convert LEN_CM column to LEN_MM to match format of other data.tables
+  
+  # convert LEN_CM column to LEN_MM to match format of other data.tables
    aint_bbs6$LEN_MM <- (aint_bbs6$LEN_CM)*10
    aint_bbs6$LEN_MM_TYPE <- aint_bbs6$LEN_CM_TYPE 
    aint_bbs6 <- select(aint_bbs6, -c(LEN_CM, LEN_CM_TYPE))
+ 
    # adding dummy columns so ncols matches with other data.tables
    # should be ok bc these columns aren't used for anything later on
    aint_bbs6$PRICE_LB_TYPE_FK <- NA
-   aint_bbs6$PRICE_LB_TYPE <- NA
+   aint_bbs6$PRICE_LB_TYPE    <- NA
+   
    # remove 9 rows of incomplete interview info, SCIENTIFIC_NAME COMMON_NAME LOCAL_NAME LEN_MM EST_LBS all NA
    aint_bbs6 <- aint_bbs6 %>% 
     filter(!is.na(EST_LBS)) 
