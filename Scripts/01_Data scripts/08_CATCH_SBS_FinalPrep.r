@@ -4,7 +4,6 @@ options(scipen = 999)
 # establish directories using this.path::
 root_dir <- this.path::here(.. = 2)
 
-source(file.path(root_dir, "Scripts", "01_Data scripts", "08_CATCH_SBS_FinalPrep_new.r"))
 # Read in the expanded landings data
 D <- fread(file=paste0(root_dir, "/Data/2023_data/SPC_AS_SBS.csv"),stringsAsFactors=FALSE) 
 d <- data.table(readRDS(file.path(root_dir, "Data", "a_catch_sbs.rds")))
