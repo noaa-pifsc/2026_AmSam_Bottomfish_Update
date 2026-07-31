@@ -1,3 +1,26 @@
+# Standardize_CPUE2
+# Runs a delta-GAM CPUE standardization for one BMUS species using BBS interview data.
+# The function fits (1) a positive-catch model and (2) a probability-of-catch model,
+# combines them into an annual standardized CPUE index, and writes diagnostic outputs.
+#
+# Inputs:
+#   Sp          : Character species code used in the BMUS metadata (e.g., "PRFL").
+#   Interaction : Logical; if TRUE, attempts YEAR:AREA_C interaction in GAM formulas.
+#   minYr       : Numeric/integer start year (inclusive) used to filter survey records.
+#   maxYr       : Numeric/integer end year (inclusive) used to filter survey records.
+#
+# Required context:
+#   - Global object `root_dir` must point to the project root.
+#   - Expects `Outputs/CPUE_C.rds` and `Data/METADATA.xlsx` (sheet "BMUS") to exist.
+#
+# Outputs:
+#   - Writes standardized CPUE CSV for SS3 to:
+#       Outputs/SS3_Inputs/CPUE/CPUE_<Sp>_<minYr>_<maxYr>.csv
+#   - Writes model selection tables and diagnostic/trend figures under:
+#       Outputs/Summary/CPUE figures/
+#
+# Returns:
+#   No explicit return value (side-effect function; files are written to disk).
 Standardize_CPUE2 <- function(Sp, Interaction=T,minYr=2016,maxYr=2021) {
   
 require(data.table); require(tidyverse); require(mgcv); require(DHARMa); require(mgcViz); require(RColorBrewer);
@@ -444,4 +467,3 @@ ggsave(Comp.Graph,file=paste0(root_dir,"/Outputs/Summary/CPUE figures/",Sp,"_Int
 print(paste("Done with", Sp))
 
 } # End of function
-
