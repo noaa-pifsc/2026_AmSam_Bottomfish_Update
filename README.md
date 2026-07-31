@@ -34,7 +34,7 @@ renv::install("name_of_package) #works for packages on Github as well
 renv::snapshot()
 ```
 and be sure to push the changes to the lockfile to the Github repo.
-3. To download data from MySQL, follow the 00_download_data.R script and be sure to use your own username and password. **NOTE** be sure not to hard code any passwords in the script and push to the repository!!
+3. To download data from MySQL, follow the `00_download_data.R` script and be sure to use your own username and password. **NOTE** be sure not to hard code any passwords in the script and push to the repository!!
 4. Open /Scripts/01_Run data scripts.R 
 5. Run script and login and give full permission to Google Drive when prompted (click bottom option to read and write to files). 
 6. Open /Scripts/02_Run SS models.R and adjust settings as needed. For first run, it is recommended to set the following options:

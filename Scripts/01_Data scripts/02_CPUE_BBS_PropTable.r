@@ -23,11 +23,24 @@ Z[SPECIES_FK==109]$SPECIES_FK <- 110 # Merge Trevallies and Jacks
 Z[SPECIES_FK==380]$SPECIES_FK <- 210 # Merge Inshore groupers and groupers
 
 # Define the time PERIOD used to calculate species proportions
-Z$PERIOD <- 999
-Z[YEAR>1985&YEAR<=1995]$PERIOD  <- 1995
-Z[YEAR>1995&YEAR<=2005]$PERIOD  <- 2005
-Z[YEAR>2005&YEAR<=2015]$PERIOD  <- 2015
-Z[YEAR>2015&YEAR<=2025]$PERIOD  <- 2025
+# 1. Find the maximum year in your dataset
+max_year <- max(Z$YEAR, na.rm = TRUE)
+
+# 2. Generate the sequence of breaks starting from 1985 up to (and slightly past) the max year
+# We use ceiling to ensure the last bucket always spans a full 10-year increment
+upper_bound <- 1985 + 10 * ceiling((max_year - 1985) / 10)
+breaks <- seq(1985, upper_bound, by = 10)
+
+# 3. Create the labels based on the upper boundary of each period
+labels <- breaks[-1]
+
+# 4. Assign the periods dynamically
+Z[, PERIOD := as.numeric(as.character(
+  cut(YEAR, breaks = breaks, labels = labels, include.lowest = FALSE)
+))]
+
+# 5. Handle your default/fallback value for years 1985 and below
+Z[is.na(PERIOD) | YEAR <= 1985, PERIOD := 999]
 
 # Merge banks and Tutuila, since most bank trips are surveyed by the same surveyors in Tutuila
 Z[AREA_C=="Bank"]$AREA_C <- "Tutuila"
@@ -155,11 +168,15 @@ PT  <- readRDS(paste0(root_dir, "/Outputs/BBS_Prop_Table.rds"))  # Species compo
 PT$GROUP_FK   <- as.character(PT$GROUP_FK)
 PT$SPECIES_FK <- as.character(PT$SPECIES_FK)
 
-D$PERIOD <- 999 # Add time period that matches the one used for prop table (PT)
-D[YEAR>1985&YEAR<=1995]$PERIOD  <- 1995
-D[YEAR>1995&YEAR<=2005]$PERIOD  <- 2005
-D[YEAR>2005&YEAR<=2015]$PERIOD  <- 2015
-D[YEAR>2015&YEAR<=2025]$PERIOD  <- 2025
+# Add time period that matches the one used for prop table (PT)
+# Assign the periods dynamically
+D[, PERIOD := as.numeric(as.character(
+  cut(YEAR, breaks = breaks, labels = labels, include.lowest = FALSE)
+))]
+
+# Handle your default/fallback value for years 1985 and below
+D[is.na(PERIOD) | YEAR <= 1985, PERIOD := 999]
+
 
 # Replace all the grouped catch into species using the proportion table calculated above.
 X            <- D[BMUS=="BMUS_Containing_Group"]

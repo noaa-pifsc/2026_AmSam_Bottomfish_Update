@@ -1,3 +1,26 @@
+# Standardize_CPUE2
+# Runs a delta-GAM CPUE standardization for one BMUS species using BBS interview data.
+# The function fits (1) a positive-catch model and (2) a probability-of-catch model,
+# combines them into an annual standardized CPUE index, and writes diagnostic outputs.
+#
+# Inputs:
+#   Sp          : Character species code used in the BMUS metadata (e.g., "PRFL").
+#   Interaction : Logical; if TRUE, attempts YEAR:AREA_C interaction in GAM formulas.
+#   minYr       : Numeric/integer start year (inclusive) used to filter survey records.
+#   maxYr       : Numeric/integer end year (inclusive) used to filter survey records.
+#
+# Required context:
+#   - Global object `root_dir` must point to the project root.
+#   - Expects `Outputs/CPUE_C.rds` and `Data/METADATA.xlsx` (sheet "BMUS") to exist.
+#
+# Outputs:
+#   - Writes standardized CPUE CSV for SS3 to:
+#       Outputs/SS3_Inputs/CPUE/CPUE_<Sp>_<minYr>_<maxYr>.csv
+#   - Writes model selection tables and diagnostic/trend figures under:
+#       Outputs/Summary/CPUE figures/
+#
+# Returns:
+#   No explicit return value (side-effect function; files are written to disk).
 Standardize_CPUE2 <- function(Sp, Interaction=T,minYr=2016,maxYr=2021) {
   
 require(data.table); require(tidyverse); require(mgcv); require(DHARMa); require(mgcViz); require(RColorBrewer);
@@ -120,16 +143,16 @@ P.SelResults$CPUE_TYPE <- "Positive-only CPUE"
 P.SelResults           <- select(P.SelResults,CPUE_TYPE,DESCRIPTION,FORMULA,AIC,DELT_AIC)
 
 # Generate model diagnostic figures
-png(file.path(root_dir,"Outputs","Summary","CPUE figures",paste0(Sp,"_DiagsPos1.png")),width=7,height=1.2,unit="in",res=300)
-par(mfrow=c(1,4),mar=c(3,3,1,1))
+png(file.path(root_dir,"Outputs","Summary","CPUE figures",paste0(Sp,"_DiagsPos1.png")),width=7,height=5,unit="in",res=300)
+par(mfrow=c(1,4),mar=c(2,2,0.5,0.5))
 gam.check(LastModel,cex.axis=0.7,cex.lab=0.7,cex.main=0.7)
 dev.off()
 
 # Check if there are nonlinear terms to plot
 N_nonlinear <- nrow(anova(LastModel)$s.table>0)
 if(!is.null(N_nonlinear)){ 
-  png(file.path(Fig.Folder,paste0(Sp,"_DiagsPos2.png")),width=1.75*N_nonlinear,height=1.2,unit="in",res=300)
-  par(mfrow=c(1,N_nonlinear),mar=c(2,2,0.1,2))
+  png(file.path(Fig.Folder,paste0(Sp,"_DiagsPos2.png")),width=1.75*N_nonlinear,height=2,unit="in",res=300)
+  par(mfrow=c(1,N_nonlinear),mar=c(2,2,0.5,1))
   plot(LastModel, residuals=T, shade=T, shift=coef(LastModel)[1], seWithMean=TRUE,cex.lab=0.7,cex.axis=0.7,mgp=c(1, 0.5, 0))
   dev.off()
 }
@@ -189,16 +212,16 @@ B.SelResults            <- select(B.SelResults,CPUE_TYPE,DESCRIPTION,FORMULA,AIC
 
 # QQ plots for logistic GAM using DHARMa package
 simulationOutput <- simulateResiduals(fittedModel = LastModel)
-png(file.path(root_dir,"Outputs","Summary","CPUE figures",paste0(Sp,"_DiagsProb1.png")),width=1.75,height=1.2,unit="in",res=300,pointsize=5)
-par(mfrow=c(1,1),mar=c(4,2,0.5,2),mgp=c(2,0.8,0))
+png(file.path(root_dir,"Outputs","Summary","CPUE figures",paste0(Sp,"_DiagsProb1.png")),width=1.75,height=2,unit="in",res=300,pointsize=5)
+par(mfrow=c(1,1),mar=c(3,2,0.5,1),mgp=c(2,0.8,0))
 plotQQunif(simulationOutput, testDispersion = FALSE,testUniformity = FALSE,testOutliers = FALSE)
 dev.off()
 
 # Check if there are nonlinear terms to plot
 N_nonlinear <- nrow(anova(LastModel)$s.table>0)
 if(!is.null(N_nonlinear)){ 
-  png(file.path(Fig.Folder,paste0(Sp,"_DiagsProb2.png")),width=1.75*N_nonlinear,height=1.2,unit="in",res=300)
-  par(mfrow=c(1,N_nonlinear),mar=c(2,2,0.1,2),mgp=c(1, 0.5, 0))
+  png(file.path(Fig.Folder,paste0(Sp,"_DiagsProb2.png")),width=1.75*N_nonlinear,height=2,unit="in",res=300)
+  par(mfrow=c(1,N_nonlinear),mar=c(2,2,0.5,1),mgp=c(1, 0.5, 0))
   plot(LastModel,trans=plogis,shade=T,residuals=T,shift = coef(LastModel)[1], seWithMean = TRUE,cex.lab=0.5, cex.axis=0.5)
   dev.off()
 }
@@ -444,4 +467,3 @@ ggsave(Comp.Graph,file=paste0(root_dir,"/Outputs/Summary/CPUE figures/",Sp,"_Int
 print(paste("Done with", Sp))
 
 } # End of function
-

@@ -1,3 +1,26 @@
+# Standardize_CPUE3
+# Runs a delta-GAM CPUE standardization for one BMUS species using BBS interview data.
+# This variant supports multi-area weighting (Tutuila, Bank, Manua), performs model
+# reduction for positive and probability components, and exports standardized indices.
+#
+# Inputs:
+#   Sp          : Character species code used in the BMUS metadata (e.g., "APRU").
+#   Interaction : Logical; if TRUE, includes YEAR:AREA_C interaction when feasible.
+#   minYr       : Numeric/integer start year (inclusive) used to filter survey records.
+#   maxYr       : Numeric/integer end year (inclusive) used to filter survey records.
+#
+# Required context:
+#   - Global object `root_dir` must point to the project root.
+#   - Expects `Outputs/CPUE_C.rds` and `Data/METADATA.xlsx` (sheet "BMUS") to exist.
+#
+# Outputs:
+#   - Writes standardized CPUE CSV for SS3 to:
+#       Outputs/SS3_Inputs/CPUE_<minYr>_<maxYr>/CPUE_<Sp>_<minYr>_<maxYr>.csv
+#   - Writes model selection tables and diagnostic/trend figures under:
+#       Outputs/Summary/CPUE figures <minYr>_<maxYr>/
+#
+# Returns:
+#   No explicit return value (side-effect function; files are written to disk).
 Standardize_CPUE3 <- function(Sp, Interaction=T,minYr=2016,maxYr=2021) {
   
 require(data.table); require(tidyverse); require(mgcv): require(DHARMa); require(mgcViz); require(RColorBrewer); require(openxlsx); require(boot); require(gridExtra); require(grid); require(viridis)
@@ -481,4 +504,3 @@ ggsave(Comp.Graph,file=file.path(Fig.Folder,paste0(Sp,"_Inter","_ModelComps.png"
 print(paste("Done with", Sp))
 
 } # End of function
-

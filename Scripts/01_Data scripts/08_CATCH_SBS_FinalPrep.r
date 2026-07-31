@@ -4,9 +4,9 @@ options(scipen = 999)
 # establish directories using this.path::
 root_dir <- this.path::here(.. = 2)
 
-source(file.path(root_dir, "Scripts", "01_Data scripts", "08_CATCH_SBS_FinalPrep_new.r"))
 # Read in the expanded landings data
 D <- fread(file=paste0(root_dir, "/Data/2023_data/SPC_AS_SBS.csv"),stringsAsFactors=FALSE) 
+d <- data.table(readRDS(file.path(root_dir, "Data", "a_catch_sbs.rds")))
 R <- data.table(  read.xlsx(paste0(root_dir, "/Data/METADATA.xlsx"),sheet="AREAS")   );  R <- R[DATASET=="SBS"]
 R <- select(R,AREA_ID,AREA_C)
 M <- data.table(  read.xlsx(paste0(root_dir, "/Data/METADATA.xlsx"),sheet="METHODS") );  M <- M[DATASET=="SBS"]
@@ -40,24 +40,38 @@ D$YEAR                           <- D$YEAR+1947
 D$SPECIES_FK                     <- paste0("S",D$SPECIES_FK)
 D[SPECIES_FK=="S243"]$SPECIES_FK <- "S241" # Fix P. rutilans
 
+d <- mutate(d, YEAR = as.numeric(substr(SPC_PK,3,4)), METHOD = substr(SPC_PK,9,10), 
+               ROUTE = substr(SPC_PK,1,2), TYPE = substr(SPC_PK,8,8), 
+               DAYNIGHT = substr(SPC_PK,7,7))
+
+d$YEAR                           <- d$YEAR+1947
+d$SPECIES_FK                     <- paste0("S",d$SPECIES_FK)
+
+# Remove earlier years of data
+d <- d[YEAR > 2021]
+
 # Remove P. zonatus from the shore-based catch (they don't occur this shallow)
 D <- D[SPECIES_FK!="S245"]
-
 
 # Simplify gears and routes
 D <- merge(D,R,by.x="ROUTE",by.y="AREA_ID",all.x=T)
 D <- merge(D,M,by.x="METHOD",by.y="METHOD_ID",all.x=T)
 D <- merge(D,S,by.x="SPECIES_FK",by.y="SPECIES_PK")
+d <- merge(d,R,by.x="ROUTE",by.y="AREA_ID",all.x=T)
+d <- merge(d,M,by.x="METHOD",by.y="METHOD_ID",all.x=T)
+d <- merge(d,S,by.x="SPECIES_FK",by.y="SPECIES_PK")
 
 D[is.na(VAR_EXP_LBS)]$VAR_EXP_LBS <- 0 # Is this necessary?
 
 # rename duplicate group SPECIES_FK in cases of complete union:
 D[SPECIES_FK == "S109"]$SPECIES_FK <- "S110"  # Jacks and Trevallies
+d[SPECIES_FK == "S109"]$SPECIES_FK <- "S110"  # Jacks and Trevallies
 D[SPECIES_FK == "S380"]$SPECIES_FK <- "S210"  # Groupers and Inshore groupers
 D[SPECIES_FK == "S390"]$SPECIES_FK <- "S230"  # Deep snappers and inshore snappers (integrate here given how little deep snappers there are)
 
 # Select a reduced number of fields and sum catch in these
 D <- D[,list(EXP_LBS=sum(EXP_LBS),VAR_EXP_LBS=sum(VAR_EXP_LBS)),by=list(SPECIES_FK,YEAR,AREA_C)]
+d <- d[,list(EXP_LBS=sum(EXP_LBS),VAR_EXP_LBS=sum(VAR_EXP_LBS)),by=list(SPECIES_FK,YEAR,AREA_C)]
 
 #==================Fix Variola louti (229) and V. albimarginata (220) issue (species IDed together from 1986 to 2015)======================
 D[YEAR<=2015&(SPECIES_FK=="S229"|SPECIES_FK=="S220")]$SPECIES_FK <- "S99999" # Assign all records to a dummy species code (for now)
@@ -88,7 +102,6 @@ D            <- merge(D.LBS,D.VAR,by=c("YEAR","AREA_C","SPECIES_FK"))
 D$SPECIES_FK <- as.character(D$SPECIES_FK)
 
 #======================Combine old data with data for update===============================
-d <- read.csv(file.path(root_dir, "Data", "SBS_d_update.csv"))
 Dd <- rbind(D,d)
 
 #======================Break down taxonomic groups into species components using proportion table from 03_BBS_proptables.R===============================
