@@ -1,0 +1,3 @@
+# Set up renv folder (where all packages will be installed) outside of google drive
+
+RENV_PATHS_LIBRARY=~/.renv/libraries/2026_AmSam_Bottomfish_Update
