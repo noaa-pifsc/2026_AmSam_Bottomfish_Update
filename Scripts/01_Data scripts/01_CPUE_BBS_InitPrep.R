@@ -66,6 +66,8 @@
    A2 <- A %>% group_by(INTERVIEW_PK,METHOD_FK) %>% summarize(TOT_EST_LBS=sum(TOT_EST_LBS),.groups="drop") %>% 
      group_by(INTERVIEW_PK) %>% summarize(N_METHODS=n())
    
+   table(A2$N_METHODS) # All of interviews have a single method (this is the way the system is designed, but confirming)
+   
    A3 <- A %>% mutate(DATE_VESSEL=paste0(SAMPLE_DATE,"_",VESSEL_FK)) %>% 
      group_by(DATE_VESSEL,METHOD_FK) %>% summarize(TOT_EST_LBS=sum(TOT_EST_LBS),.groups="drop") %>% 
      group_by(DATE_VESSEL) %>% summarize(N_METHODS=n())
