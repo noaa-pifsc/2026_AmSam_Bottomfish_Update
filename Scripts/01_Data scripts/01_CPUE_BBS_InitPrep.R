@@ -60,6 +60,19 @@
    length(unique(A$INTERVIEW_PK)) #15121 #with new data now 15369, added 248 rows
 
    A$YEAR         <- as.numeric(year(A$SAMPLE_DATE))
+   
+   # Check how many interviews have multiple methods.
+   
+   A2 <- A %>% group_by(INTERVIEW_PK,METHOD_FK) %>% summarize(TOT_EST_LBS=sum(TOT_EST_LBS),.groups="drop") %>% 
+     group_by(INTERVIEW_PK) %>% summarize(N_METHODS=n())
+   
+   A3 <- A %>% mutate(DATE_VESSEL=paste0(SAMPLE_DATE,"_",VESSEL_FK)) %>% 
+     group_by(DATE_VESSEL,METHOD_FK) %>% summarize(TOT_EST_LBS=sum(TOT_EST_LBS),.groups="drop") %>% 
+     group_by(DATE_VESSEL) %>% summarize(N_METHODS=n())
+   
+    table(A3$N_METHODS)
+   
+   # Practically all vessels have only 1 interview_pk per day (all data entered under a single gear code).
     
    # Filter for the two bottomfishing methods 
    length(unique(A[YEAR>=2016&(METHOD_FK==4|METHOD_FK==5)]$INTERVIEW_PK)) #411 #update: 503
